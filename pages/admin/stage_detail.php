@@ -139,6 +139,7 @@ $peutRenouveler = $isActif && $stage['nb_renouvellements'] < 3;
             <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
                 <?php if ($stage['statut'] === 'preparation'): ?>
                 <form method="POST" action="backoffice.php?action=gerer_stage">
+            <?= csrfField() ?>
                     <input type="hidden" name="stage_id" value="<?= $id ?>">
                     <input type="hidden" name="sous_action" value="demarrer">
                     <button type="submit" class="btn btn-success" style="width:100%">▶ Démarrer le stage</button>
@@ -147,11 +148,13 @@ $peutRenouveler = $isActif && $stage['nb_renouvellements'] < 3;
 
                 <?php if (in_array($stage['statut'], ['en_cours', 'renouvele'], true)): ?>
                 <form method="POST" action="backoffice.php?action=gerer_stage" onsubmit="return confirm('Confirmer la fin du stage ?')">
+            <?= csrfField() ?>
                     <input type="hidden" name="stage_id" value="<?= $id ?>">
                     <input type="hidden" name="sous_action" value="terminer">
                     <button type="submit" class="btn btn-navy" style="width:100%">✓ Marquer comme terminé</button>
                 </form>
                 <form method="POST" action="backoffice.php?action=gerer_stage" onsubmit="return confirm('Confirmer l\'interruption du stage ?')">
+            <?= csrfField() ?>
                     <input type="hidden" name="stage_id" value="<?= $id ?>">
                     <input type="hidden" name="sous_action" value="interrompre">
                     <button type="submit" class="btn btn-danger" style="width:100%">✗ Interrompre</button>
@@ -181,6 +184,7 @@ $peutRenouveler = $isActif && $stage['nb_renouvellements'] < 3;
             <button class="modal-close" onclick="closeModal('modal-renouveler')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=gerer_stage">
+            <?= csrfField() ?>
             <input type="hidden" name="stage_id" value="<?= $id ?>">
             <input type="hidden" name="sous_action" value="renouveler">
             <div class="modal-body">
@@ -210,6 +214,7 @@ $peutRenouveler = $isActif && $stage['nb_renouvellements'] < 3;
             <button class="modal-close" onclick="closeModal('modal-encadrant')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=gerer_stage">
+            <?= csrfField() ?>
             <input type="hidden" name="stage_id" value="<?= $id ?>">
             <input type="hidden" name="sous_action" value="encadrant">
             <div class="modal-body">
@@ -241,6 +246,7 @@ $peutRenouveler = $isActif && $stage['nb_renouvellements'] < 3;
             <button class="modal-close" onclick="closeModal('modal-transport')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=gerer_stage">
+            <?= csrfField() ?>
             <input type="hidden" name="stage_id" value="<?= $id ?>">
             <input type="hidden" name="sous_action" value="transport">
             <div class="modal-body">
@@ -271,6 +277,7 @@ $peutRenouveler = $isActif && $stage['nb_renouvellements'] < 3;
             <button class="modal-close" onclick="closeModal('modal-dates')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=gerer_stage">
+            <?= csrfField() ?>
             <input type="hidden" name="stage_id" value="<?= $id ?>">
             <input type="hidden" name="sous_action" value="dates">
             <div class="modal-body">

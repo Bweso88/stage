@@ -83,6 +83,7 @@ $roles = ['administrateur', 'habilite', 'superviseur', 'directeur', 'stagiaire']
             <button class="modal-close" onclick="closeModal('modal-creer-user')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=create_user">
+            <?= csrfField() ?>
             <div class="modal-body">
                 <div class="form-grid">
                     <div class="form-group">

@@ -54,6 +54,7 @@ $apiStatus  = (!empty($apiKey) && $apiKey !== 'sk-ant-api03-YOUR_KEY_HERE');
             <hr class="divider">
 
             <form method="POST">
+            <?= csrfField() ?>
                 <div class="form-grid">
                     <div class="form-group full">
                         <label>Envoyer un email de test à *</label>

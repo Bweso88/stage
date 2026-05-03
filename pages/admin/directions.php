@@ -109,6 +109,7 @@ $domaines = $pdo->query("
             <button class="modal-close" onclick="closeModal('modal-add-dir')">×</button>
         </div>
         <form method="POST" action="backoffice.php?page=directions">
+            <?= csrfField() ?>
             <input type="hidden" name="add_direction" value="1">
             <div class="modal-body">
                 <div class="form-group" style="margin-bottom:14px">
@@ -136,6 +137,7 @@ $domaines = $pdo->query("
             <button class="modal-close" onclick="closeModal('modal-add-dom')">×</button>
         </div>
         <form method="POST" action="backoffice.php?page=directions">
+            <?= csrfField() ?>
             <input type="hidden" name="add_domaine" value="1">
             <div class="modal-body">
                 <div class="form-group">
@@ -160,6 +162,7 @@ $domaines = $pdo->query("
             <button class="modal-close" onclick="closeModal('modal-edit-dir-<?= $d['id'] ?>')">×</button>
         </div>
         <form method="POST" action="backoffice.php?page=directions">
+            <?= csrfField() ?>
             <input type="hidden" name="edit_direction" value="1">
             <input type="hidden" name="dir_id" value="<?= $d['id'] ?>">
             <div class="modal-body">
@@ -190,6 +193,7 @@ $domaines = $pdo->query("
             <button class="modal-close" onclick="closeModal('modal-edit-dom-<?= $d['id'] ?>')">×</button>
         </div>
         <form method="POST" action="backoffice.php?page=directions">
+            <?= csrfField() ?>
             <input type="hidden" name="edit_domaine" value="1">
             <input type="hidden" name="dom_id" value="<?= $d['id'] ?>">
             <div class="modal-body">

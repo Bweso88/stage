@@ -138,6 +138,7 @@ $domaines = $pdo->query("SELECT id, libelle FROM domaines WHERE actif = 1 ORDER 
             <button class="modal-close" onclick="closeModal('modal-nouvelle-cand')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=soumettre_candidature">
+            <?= csrfField() ?>
             <div class="modal-body">
                 <div class="form-grid">
                     <div class="form-group full">

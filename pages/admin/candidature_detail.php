@@ -241,6 +241,7 @@ $niv2Done = array_filter($validations, fn($v) => $v['niveau_validation'] === 'ni
             <button class="modal-close" onclick="closeModal('modal-decision-niv1')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=valider_candidature">
+            <?= csrfField() ?>
             <input type="hidden" name="candidature_id" value="<?= $id ?>">
             <input type="hidden" name="niveau" value="niv1">
             <div class="modal-body">
@@ -273,6 +274,7 @@ $niv2Done = array_filter($validations, fn($v) => $v['niveau_validation'] === 'ni
             <button class="modal-close" onclick="closeModal('modal-decision-niv2')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=valider_candidature">
+            <?= csrfField() ?>
             <input type="hidden" name="candidature_id" value="<?= $id ?>">
             <input type="hidden" name="niveau" value="niv2">
             <div class="modal-body">
@@ -306,6 +308,7 @@ $niv2Done = array_filter($validations, fn($v) => $v['niveau_validation'] === 'ni
             <button class="modal-close" onclick="closeModal('modal-programmer')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=creer_stage_depuis_cand">
+            <?= csrfField() ?>
             <input type="hidden" name="candidature_id" value="<?= $id ?>">
             <div class="modal-body">
                 <div class="alert alert-info">La durée initiale est limitée à <strong>31 jours</strong>. Des renouvellements pourront être demandés ensuite.</div>

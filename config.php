@@ -3,7 +3,19 @@
  * StagIA - Configuration principale
  */
 
+// Session cookie hardening
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_samesite', 'Lax');
+if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+    ini_set('session.cookie_secure', '1');
+}
 session_start();
+
+// HTTP security headers
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header("Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'");
 
 // ─── Chargement du fichier .env ───────────────────────────────────────────────
 function loadEnv(string $path): void {
@@ -65,8 +77,33 @@ function h(string $s): string {
 }
 
 function redirect(string $url): void {
+    // Empêche les open redirects : on n'accepte que les chemins internes
+    if (!str_starts_with($url, '/') || str_starts_with($url, '//')) {
+        $url = '/';
+    }
     header("Location: $url");
     exit;
+}
+
+// ─── CSRF ─────────────────────────────────────────────────────────────────────
+function csrfToken(): string {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function csrfField(): string {
+    return '<input type="hidden" name="_csrf" value="' . h(csrfToken()) . '">';
+}
+
+function csrfVerify(): void {
+    $token    = $_POST['_csrf'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    $expected = $_SESSION['csrf_token'] ?? '';
+    if (!$expected || !hash_equals($expected, $token)) {
+        http_response_code(403);
+        die('<h1>403 — Requête refusée (jeton CSRF invalide)</h1>');
+    }
 }
 
 function flash(string $msg, string $type = 'success'): void {
@@ -105,6 +142,30 @@ function requireAdmin(): void {
         flash('Accès refusé. Veuillez vous connecter.', 'error');
         redirect('/admin.php');
     }
+}
+
+// ─── Rate limiting (brute-force protection) ───────────────────────────────────
+function checkLoginRateLimit(string $key): bool {
+    $maxAttempts = 5;
+    $windowSecs  = 300; // 5 minutes
+    $now         = time();
+    $sessKey     = 'login_attempts_' . md5($key);
+
+    if (!isset($_SESSION[$sessKey])) {
+        $_SESSION[$sessKey] = ['count' => 0, 'since' => $now];
+    }
+
+    if ($now - $_SESSION[$sessKey]['since'] > $windowSecs) {
+        $_SESSION[$sessKey] = ['count' => 0, 'since' => $now];
+    }
+
+    $_SESSION[$sessKey]['count']++;
+
+    return $_SESSION[$sessKey]['count'] <= $maxAttempts;
+}
+
+function resetLoginRateLimit(string $key): void {
+    unset($_SESSION['login_attempts_' . md5($key)]);
 }
 
 function requireStagiaire(): void {

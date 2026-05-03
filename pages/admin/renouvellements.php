@@ -31,7 +31,9 @@ $renouvellements = $stmt->fetchAll();
 
 $counts = [];
 foreach (['en_attente','valide','rejete','precisions'] as $st) {
-    $counts[$st] = (int)$pdo->prepare("SELECT COUNT(*) FROM renouvellements_stage WHERE statut = ?")->execute([$st]) ? $pdo->query("SELECT COUNT(*) FROM renouvellements_stage WHERE statut = '$st'")->fetchColumn() : 0;
+    $cstmt = $pdo->prepare("SELECT COUNT(*) FROM renouvellements_stage WHERE statut = ?");
+    $cstmt->execute([$st]);
+    $counts[$st] = (int)$cstmt->fetchColumn();
 }
 $counts['tous'] = (int)$pdo->query("SELECT COUNT(*) FROM renouvellements_stage")->fetchColumn();
 
@@ -116,6 +118,7 @@ $filtres = [
             <button class="modal-close" onclick="closeModal('modal-dec-<?= $r['id'] ?>')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=valider_renouvellement">
+            <?= csrfField() ?>
             <input type="hidden" name="renouvellement_id" value="<?= $r['id'] ?>">
             <div class="modal-body">
                 <div class="alert alert-info" style="margin-bottom:16px">

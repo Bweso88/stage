@@ -21,6 +21,7 @@ $directions = $pdo->query("SELECT id, libelle FROM directions WHERE actif = 1 OR
 $niveaux  = ['bac','bac+2','bac+3','bac+4','bac+5','doctorat'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrfVerify();
 
     // Étape 1 : Créer compte
     if (isset($_POST['etape1'])) {
@@ -83,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Connexion automatique
+            session_regenerate_id(true);
             $_SESSION['user'] = [
                 'id'           => $userId,
                 'nom'          => $nom,
@@ -199,6 +201,7 @@ if ($offreId) {
         </div>
         <div class="card-body">
             <form method="POST">
+            <?= csrfField() ?>
                 <input type="hidden" name="etape1" value="1">
 
                 <!-- Compte -->

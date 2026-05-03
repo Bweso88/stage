@@ -11,23 +11,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_stagiaire'])) {
     $email = trim($_POST['email'] ?? '');
     $mdp   = $_POST['mot_de_passe'] ?? '';
 
-    $pdo  = getPDO();
-    $stmt = $pdo->prepare("SELECT u.*, s.id AS stagiaire_id FROM utilisateurs u JOIN stagiaires s ON s.utilisateur_id = u.id WHERE u.email = ? AND u.actif = 1 AND u.role = 'stagiaire'");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    if ($user && password_verify($mdp, $user['mot_de_passe'])) {
-        $_SESSION['user'] = [
-            'id'           => $user['id'],
-            'nom'          => $user['nom'],
-            'prenom'       => $user['prenom'],
-            'email'        => $user['email'],
-            'role'         => $user['role'],
-            'stagiaire_id' => $user['stagiaire_id'],
-        ];
-        redirect('/espace-stagiaire.php');
+    if (!checkLoginRateLimit('stagiaire:' . $email)) {
+        $error = 'Trop de tentatives. Réessayez dans 5 minutes.';
     } else {
-        $error = 'Email ou mot de passe incorrect.';
+        $pdo  = getPDO();
+        $stmt = $pdo->prepare("SELECT u.*, s.id AS stagiaire_id FROM utilisateurs u JOIN stagiaires s ON s.utilisateur_id = u.id WHERE u.email = ? AND u.actif = 1 AND u.role = 'stagiaire'");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($mdp, $user['mot_de_passe'])) {
+            resetLoginRateLimit('stagiaire:' . $email);
+            session_regenerate_id(true);
+            $_SESSION['user'] = [
+                'id'           => $user['id'],
+                'nom'          => $user['nom'],
+                'prenom'       => $user['prenom'],
+                'email'        => $user['email'],
+                'role'         => $user['role'],
+                'stagiaire_id' => $user['stagiaire_id'],
+            ];
+            redirect('/espace-stagiaire.php');
+        } else {
+            $error = 'Email ou mot de passe incorrect.';
+        }
     }
 }
 
@@ -224,6 +230,7 @@ $offres = $pdo->query("
                     <?php endif; ?>
 
                     <form method="POST">
+            <?= csrfField() ?>
                         <div class="form-group">
                             <label>Email</label>
                             <input type="email" name="email" required placeholder="votre@email.com" value="<?= h($_POST['email'] ?? '') ?>">

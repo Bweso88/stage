@@ -193,6 +193,7 @@ if ($action === 'export_rapport') {
 // ACTIONS POST
 // ─────────────────────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrfVerify();
 
     // Valider candidature
     if ($action === 'valider_candidature') {
@@ -309,10 +310,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dateFin     = $_POST['date_fin']   ?? '';
         $encadrantId = (int)($_POST['encadrant_id'] ?? 0) ?: null;
         $remb        = isset($_POST['remboursement']) ? 1 : 0;
-        $montant     = (float)($_POST['montant_transport'] ?? 0);
+        $montant     = max(0.0, (float)($_POST['montant_transport'] ?? 0));
 
         if (!$cid || !$dateDebut || !$dateFin) {
             flash('Données manquantes.', 'error');
+            redirect('/backoffice.php?page=candidature_detail&id=' . $cid);
+        }
+
+        if (strtotime($dateDebut) < strtotime('today')) {
+            flash('La date de début ne peut pas être dans le passé.', 'error');
             redirect('/backoffice.php?page=candidature_detail&id=' . $cid);
         }
 
@@ -387,6 +393,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $renouv = $stmt->fetch();
 
         if (!$renouv) { flash('Renouvellement introuvable.', 'error'); redirect('/backoffice.php?page=renouvellements'); }
+
+        if ($decision === 'valide') {
+            $errors = verifierRenouvellement($renouv['stage_id'], $renouv['date_fin_proposee']);
+            if ($errors) {
+                flash(implode(' ', $errors), 'error');
+                redirect('/backoffice.php?page=renouvellements');
+            }
+        }
 
         $pdo->prepare("UPDATE renouvellements_stage SET statut=?, traite_par=?, commentaire_decision=?, date_decision=NOW() WHERE id=?")
             ->execute([$decision, $_SESSION['user']['id'], $comment, $rid]);
@@ -496,6 +510,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stageId    = (int)($_POST['stage_id'] ?? 0);
         $sousAction = $_POST['sous_action'] ?? '';
 
+        if (!in_array($sousAction, ['terminer', 'interrompre', 'demarrer', 'dates', 'encadrant', 'transport', 'renouveler'], true)) {
+            flash('Action invalide.', 'error');
+            redirect('/backoffice.php?page=stages');
+        }
+
         $stmt = $pdo->prepare("SELECT * FROM stages WHERE id = ?");
         $stmt->execute([$stageId]);
         $stage = $stmt->fetch();
@@ -522,7 +541,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare("UPDATE stages SET remboursement_transport=?, montant_transport=? WHERE id=?")
                 ->execute([
                     isset($_POST['remboursement']) ? 1 : 0,
-                    (float)($_POST['montant_transport'] ?? 0),
+                    max(0.0, (float)($_POST['montant_transport'] ?? 0)),
                     $stageId
                 ]);
             flash('Informations transport mises à jour.');
@@ -574,6 +593,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'soumettre_candidature') {
         $stagId  = (int)($_POST['stagiaire_id'] ?? 0);
         $typeC   = $_POST['type_candidature'] ?? 'spontanee';
+        if (!in_array($typeC, ['offre', 'spontanee'], true)) {
+            $typeC = 'spontanee';
+        }
         $offreId = (int)($_POST['offre_id'] ?? 0) ?: null;
         $domId   = (int)($_POST['domaine_id'] ?? 0) ?: null;
         $dirId   = (int)($_POST['direction_id'] ?? 0) ?: null;

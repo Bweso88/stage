@@ -66,6 +66,8 @@ foreach ($stages as $s) {
 }
 
 // Gestion formulaire renouvellement
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { csrfVerify(); }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['demande_renouvellement'])) {
     $stageId   = (int)($_POST['stage_id'] ?? 0);
     $dateFin   = $_POST['date_fin_proposee'] ?? '';
@@ -339,6 +341,7 @@ function statusBadgeSimple(string $s): string {
             <button class="modal-close" onclick="closeModal('modal-candidature')">×</button>
         </div>
         <form method="POST">
+            <?= csrfField() ?>
             <input type="hidden" name="nouvelle_candidature" value="1">
             <div class="modal-body">
                 <div class="form-group">
@@ -397,6 +400,7 @@ function statusBadgeSimple(string $s): string {
             <button class="modal-close" onclick="closeModal('modal-renouv')">×</button>
         </div>
         <form method="POST">
+            <?= csrfField() ?>
             <input type="hidden" name="demande_renouvellement" value="1">
             <input type="hidden" name="stage_id" value="<?= $stageActif['id'] ?>">
             <div class="modal-body">

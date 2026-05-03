@@ -12,22 +12,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mdp   = $_POST['mot_de_passe'] ?? '';
 
     if ($email && $mdp) {
-        $pdo  = getPDO();
-        $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = ? AND actif = 1 AND role != 'stagiaire'");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-
-        if ($user && password_verify($mdp, $user['mot_de_passe'])) {
-            $_SESSION['user'] = [
-                'id'     => $user['id'],
-                'nom'    => $user['nom'],
-                'prenom' => $user['prenom'],
-                'email'  => $user['email'],
-                'role'   => $user['role'],
-            ];
-            redirect('/backoffice.php');
+        if (!checkLoginRateLimit('admin:' . $email)) {
+            $error = 'Trop de tentatives. Réessayez dans 5 minutes.';
         } else {
-            $error = 'Email ou mot de passe incorrect.';
+            $pdo  = getPDO();
+            $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = ? AND actif = 1 AND role != 'stagiaire'");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($mdp, $user['mot_de_passe'])) {
+                resetLoginRateLimit('admin:' . $email);
+                session_regenerate_id(true);
+                $_SESSION['user'] = [
+                    'id'     => $user['id'],
+                    'nom'    => $user['nom'],
+                    'prenom' => $user['prenom'],
+                    'email'  => $user['email'],
+                    'role'   => $user['role'],
+                ];
+                redirect('/backoffice.php');
+            } else {
+                $error = 'Email ou mot de passe incorrect.';
+            }
         }
     } else {
         $error = 'Veuillez remplir tous les champs.';
@@ -168,6 +174,7 @@ $flash = getFlash();
         <?php endif; ?>
 
         <form method="POST">
+            <?= csrfField() ?>
             <div class="form-group">
                 <label for="email">Adresse email</label>
                 <input type="email" id="email" name="email" placeholder="votre@email.com"

@@ -126,6 +126,7 @@ $niveaux    = ['bac','bac+2','bac+3','bac+4','bac+5','doctorat'];
             <button class="modal-close" onclick="closeModal('modal-creer-offre')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=creer_offre">
+            <?= csrfField() ?>
             <div class="modal-body">
                 <div class="form-grid">
                     <div class="form-group full">
@@ -198,6 +199,7 @@ $niveaux    = ['bac','bac+2','bac+3','bac+4','bac+5','doctorat'];
             <button class="modal-close" onclick="closeModal('modal-edit-<?= $o['id'] ?>')">×</button>
         </div>
         <form method="POST" action="backoffice.php?action=modifier_offre">
+            <?= csrfField() ?>
             <input type="hidden" name="offre_id" value="<?= $o['id'] ?>">
             <div class="modal-body">
                 <div class="form-grid">
