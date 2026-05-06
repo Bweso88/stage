@@ -234,11 +234,11 @@ INSERT INTO domaines (libelle) VALUES
 -- Utilisateurs (mot de passe: password => $2y$12$...)
 -- Hash de 'password'
 INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, civilite) VALUES
-('Admin', 'StagIA', 'admin@stagia.org', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'administrateur', 'M.'),
-('Diallo', 'Mamadou', 'm.diallo@stagia.org', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'habilite', 'M.'),
-('Camara', 'Ibrahima', 'i.camara@stagia.org', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'superviseur', 'M.'),
-('Barry', 'Fatoumata', 'f.barry@stagia.org', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'directeur', 'Mme'),
-('Sow', 'Ibrahim', 'ibrahim.sow@email.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'stagiaire', 'M.');
+('Admin', 'StagIA', 'admin@stagia.org', '$2y$12$gGExGzriCA8UdsNI80f7d.b/Vib3PXw/vcTFgqTxs5s6hqD2fRYRG', 'administrateur', 'M.'),
+('Diallo', 'Mamadou', 'm.diallo@stagia.org', '$2y$12$gGExGzriCA8UdsNI80f7d.b/Vib3PXw/vcTFgqTxs5s6hqD2fRYRG', 'habilite', 'M.'),
+('Camara', 'Ibrahima', 'i.camara@stagia.org', '$2y$12$gGExGzriCA8UdsNI80f7d.b/Vib3PXw/vcTFgqTxs5s6hqD2fRYRG', 'superviseur', 'M.'),
+('Barry', 'Fatoumata', 'f.barry@stagia.org', '$2y$12$gGExGzriCA8UdsNI80f7d.b/Vib3PXw/vcTFgqTxs5s6hqD2fRYRG', 'directeur', 'Mme'),
+('Sow', 'Ibrahim', 'ibrahim.sow@email.com', '$2y$12$gGExGzriCA8UdsNI80f7d.b/Vib3PXw/vcTFgqTxs5s6hqD2fRYRG', 'stagiaire', 'M.');
 
 -- Stagiaire
 INSERT INTO stagiaires (utilisateur_id, niveau_etude, telephone, adresse, ville, date_naissance, sexe, domaine_principal_id) VALUES
