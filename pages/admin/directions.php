@@ -13,6 +13,18 @@ $domaines   = $pdo->query('SELECT d.*, (SELECT COUNT(*) FROM candidatures c WHER
 
 require __DIR__ . '/../../includes/header.php';
 ?>
+
+<script>
+function openModal(id) {
+    var el = document.getElementById(id);
+    if (el) { el.style.display = 'flex'; el.classList.add('open'); }
+}
+function closeModal(id) {
+    var el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; el.classList.remove('open'); }
+}
+</script>
+
 <div class="page-header">
   <h1>Directions &amp; Domaines</h1>
   <div style="display:flex;gap:8px">
@@ -21,14 +33,14 @@ require __DIR__ . '/../../includes/header.php';
   </div>
 </div>
 
-<div class="section-grid">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
   <!-- Directions -->
   <div class="card">
     <div class="card-header"><h3 class="card-title">Directions (<?= count($directions) ?>)</h3></div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Libellé</th><th>Abréviation</th><th>Offres</th><th>Stages</th><th>Statut</th><th>Actions</th></tr>
+          <tr><th>Libellé</th><th>Abrév.</th><th>Offres</th><th>Stages</th><th>Statut</th><th>Actions</th></tr>
         </thead>
         <tbody>
           <?php foreach ($directions as $d): ?>
@@ -38,9 +50,9 @@ require __DIR__ . '/../../includes/header.php';
             <td><?= (int)$d['nb_offres'] ?></td>
             <td><?= (int)$d['nb_stages'] ?></td>
             <td><?= $d['actif'] ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-secondary">Inactive</span>' ?></td>
-            <td>
-              <button class="btn btn-sm btn-secondary" onclick="openModal('modal-edit-dir-<?= $d['id'] ?>')">✏️ Modifier</button>
-              <a href="backoffice.php?action=toggle_dir&id=<?= $d['id'] ?>" class="btn btn-sm btn-secondary"><?= $d['actif'] ? '🔒 Désactiver' : '🔓 Activer' ?></a>
+            <td class="td-actions">
+              <button class="btn btn-sm btn-secondary" onclick="openModal('modal-edit-dir-<?= (int)$d['id'] ?>')">✏️</button>
+              <a href="backoffice.php?action=toggle_dir&amp;id=<?= (int)$d['id'] ?>" class="btn btn-sm btn-secondary"><?= $d['actif'] ? '🔒' : '🔓' ?></a>
             </td>
           </tr>
           <?php endforeach ?>
@@ -63,9 +75,9 @@ require __DIR__ . '/../../includes/header.php';
             <td><strong><?= h($d['libelle']) ?></strong></td>
             <td><?= (int)$d['nb_cand'] ?></td>
             <td><?= $d['actif'] ? '<span class="badge badge-success">Actif</span>' : '<span class="badge badge-secondary">Inactif</span>' ?></td>
-            <td>
-              <button class="btn btn-sm btn-secondary" onclick="openModal('modal-edit-dom-<?= $d['id'] ?>')">✏️ Modifier</button>
-              <a href="backoffice.php?action=toggle_dom&id=<?= $d['id'] ?>" class="btn btn-sm btn-secondary"><?= $d['actif'] ? '🔒 Désactiver' : '🔓 Activer' ?></a>
+            <td class="td-actions">
+              <button class="btn btn-sm btn-secondary" onclick="openModal('modal-edit-dom-<?= (int)$d['id'] ?>')">✏️</button>
+              <a href="backoffice.php?action=toggle_dom&amp;id=<?= (int)$d['id'] ?>" class="btn btn-sm btn-secondary"><?= $d['actif'] ? '🔒' : '🔓' ?></a>
             </td>
           </tr>
           <?php endforeach ?>
@@ -76,14 +88,13 @@ require __DIR__ . '/../../includes/header.php';
 </div>
 
 <!-- Modal Ajouter Direction -->
-<div class="modal-overlay" id="modal-add-dir">
+<div class="modal-overlay" id="modal-add-dir" style="display:none">
   <div class="modal">
     <div class="modal-header">
       <h3>Nouvelle direction</h3>
       <button class="modal-close" onclick="closeModal('modal-add-dir')">✕</button>
     </div>
     <form method="POST" action="backoffice.php">
-      <?= csrfField() ?>
       <input type="hidden" name="action" value="add_direction">
       <div class="modal-body">
         <div class="form-group">
@@ -104,14 +115,13 @@ require __DIR__ . '/../../includes/header.php';
 </div>
 
 <!-- Modal Ajouter Domaine -->
-<div class="modal-overlay" id="modal-add-dom">
+<div class="modal-overlay" id="modal-add-dom" style="display:none">
   <div class="modal">
     <div class="modal-header">
       <h3>Nouveau domaine</h3>
       <button class="modal-close" onclick="closeModal('modal-add-dom')">✕</button>
     </div>
     <form method="POST" action="backoffice.php">
-      <?= csrfField() ?>
       <input type="hidden" name="action" value="add_domaine">
       <div class="modal-body">
         <div class="form-group">
@@ -129,16 +139,15 @@ require __DIR__ . '/../../includes/header.php';
 
 <!-- Modals Edit Direction -->
 <?php foreach ($directions as $d): ?>
-<div class="modal-overlay" id="modal-edit-dir-<?= $d['id'] ?>">
+<div class="modal-overlay" id="modal-edit-dir-<?= (int)$d['id'] ?>" style="display:none">
   <div class="modal">
     <div class="modal-header">
-      <h3>Modifier — <?= h($d['libelle']) ?></h3>
-      <button class="modal-close" onclick="closeModal('modal-edit-dir-<?= $d['id'] ?>')">✕</button>
+      <h3>Modifier direction</h3>
+      <button class="modal-close" onclick="closeModal('modal-edit-dir-<?= (int)$d['id'] ?>')">✕</button>
     </div>
     <form method="POST" action="backoffice.php">
-      <?= csrfField() ?>
       <input type="hidden" name="action" value="edit_direction">
-      <input type="hidden" name="dir_id" value="<?= $d['id'] ?>">
+      <input type="hidden" name="dir_id" value="<?= (int)$d['id'] ?>">
       <div class="modal-body">
         <div class="form-group">
           <label>Libellé *</label>
@@ -150,7 +159,7 @@ require __DIR__ . '/../../includes/header.php';
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-dir-<?= $d['id'] ?>')">Annuler</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-dir-<?= (int)$d['id'] ?>')">Annuler</button>
         <button type="submit" class="btn btn-danger">Enregistrer</button>
       </div>
     </form>
@@ -160,16 +169,15 @@ require __DIR__ . '/../../includes/header.php';
 
 <!-- Modals Edit Domaine -->
 <?php foreach ($domaines as $d): ?>
-<div class="modal-overlay" id="modal-edit-dom-<?= $d['id'] ?>">
+<div class="modal-overlay" id="modal-edit-dom-<?= (int)$d['id'] ?>" style="display:none">
   <div class="modal">
     <div class="modal-header">
-      <h3>Modifier — <?= h($d['libelle']) ?></h3>
-      <button class="modal-close" onclick="closeModal('modal-edit-dom-<?= $d['id'] ?>')">✕</button>
+      <h3>Modifier domaine</h3>
+      <button class="modal-close" onclick="closeModal('modal-edit-dom-<?= (int)$d['id'] ?>')">✕</button>
     </div>
     <form method="POST" action="backoffice.php">
-      <?= csrfField() ?>
       <input type="hidden" name="action" value="edit_domaine">
-      <input type="hidden" name="dom_id" value="<?= $d['id'] ?>">
+      <input type="hidden" name="dom_id" value="<?= (int)$d['id'] ?>">
       <div class="modal-body">
         <div class="form-group">
           <label>Libellé *</label>
@@ -177,7 +185,7 @@ require __DIR__ . '/../../includes/header.php';
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-dom-<?= $d['id'] ?>')">Annuler</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-dom-<?= (int)$d['id'] ?>')">Annuler</button>
         <button type="submit" class="btn btn-primary">Enregistrer</button>
       </div>
     </form>
