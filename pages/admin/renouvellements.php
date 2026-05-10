@@ -4,18 +4,20 @@ requireAdmin();
 define('STAGIA_PAGE', 'Renouvellements');
 $pdo = getPDO();
 
-$renouvellements = $pdo->query('
+$ren_stmt = $pdo->prepare('
     SELECT r.*,
            sg.reference AS ref_stage,
            u.nom, u.prenom,
-           dec.nom AS dec_nom, dec.prenom AS dec_prenom
+           tu.nom AS dec_nom, tu.prenom AS dec_prenom
     FROM renouvellements_stage r
     JOIN stages sg ON r.stage_id = sg.id
     JOIN stagiaires st ON sg.stagiaire_id = st.id
     JOIN utilisateurs u ON st.utilisateur_id = u.id
-    LEFT JOIN utilisateurs dec ON r.traite_par = dec.id
-    ORDER BY r.statut = \'en_attente\' DESC, r.id DESC
-')->fetchAll();
+    LEFT JOIN utilisateurs tu ON r.traite_par = tu.id
+    ORDER BY CASE WHEN r.statut = \'en_attente\' THEN 0 ELSE 1 END, r.id DESC
+');
+$ren_stmt->execute();
+$renouvellements = $ren_stmt->fetchAll();
 
 require __DIR__ . '/../../includes/header.php';
 ?>
