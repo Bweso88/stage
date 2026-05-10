@@ -91,9 +91,18 @@ body{font-family:'Montserrat',sans-serif;background:#f4f5f7;color:#2c3e50;displa
 
 .sidebar-footer{
   padding:16px 20px;
-  border-top:1px solid rgba(255,255,255,.1);
-  font-size:12px;color:rgba(255,255,255,.4);
+  border-top:1px solid rgba(255,255,255,.15);
 }
+.sidebar-logout{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:8px;
+  background:rgba(232,0,28,.15);
+  color:#ff6b7a;
+  text-decoration:none;
+  font-size:13px;font-weight:600;
+  transition:all .2s;
+}
+.sidebar-logout:hover{background:var(--red);color:#fff;}
 
 /* ── Main layout ── */
 .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
@@ -414,7 +423,9 @@ textarea.form-control{min-height:100px;resize:vertical;}
   </nav>
 
   <div class="sidebar-footer">
-    <a href="logout.php" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:12px;">⬅ D&eacute;connexion</a>
+    <a href="logout.php" class="sidebar-logout">
+      <span>⬅</span> D&eacute;connexion
+    </a>
   </div>
 </aside>
 
