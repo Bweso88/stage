@@ -22,13 +22,13 @@ $stage_existe = $pdo->prepare('SELECT id FROM stages WHERE candidature_id = ?');
 $stage_existe->execute([$id]);
 $stage_id = $stage_existe->fetchColumn();
 
-$admins = $pdo->query('SELECT id, nom, prenom, role FROM utilisateurs WHERE role != ? AND actif = 1 ORDER BY nom', PDO::FETCH_ASSOC)->fetchAll();
-// Use prepare for safety
 $admins = $pdo->prepare('SELECT id, nom, prenom, role FROM utilisateurs WHERE role != ? AND actif = 1 ORDER BY nom');
 $admins->execute(['stagiaire']);
 $admins = $admins->fetchAll();
 
-$directions = $pdo->query('SELECT * FROM directions WHERE actif = 1 ORDER BY libelle')->fetchAll();
+$directions_stmt = $pdo->prepare('SELECT * FROM directions WHERE actif = 1 ORDER BY libelle');
+$directions_stmt->execute();
+$directions = $directions_stmt->fetchAll();
 
 $val_niv1 = null; $val_niv2 = null;
 foreach ($validations as $v) {
