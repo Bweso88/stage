@@ -226,6 +226,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('backoffice.php?page=utilisateurs');
     }
 
+    // ── Modifier utilisateur ──────────────────────────────────────
+    if ($action === 'edit_user') {
+        if (!hasRole('administrateur')) { flash('Accès refusé.', 'error'); redirect('backoffice.php?page=utilisateurs'); }
+        $id     = (int)($_POST['user_id'] ?? 0);
+        $nom    = trim($_POST['nom'] ?? '');
+        $prenom = trim($_POST['prenom'] ?? '');
+        $email  = trim($_POST['email'] ?? '');
+        $role   = $_POST['role'] ?? 'habilite';
+        $civil  = $_POST['civilite'] ?? 'M.';
+        $mdp    = $_POST['nouveau_mdp'] ?? '';
+
+        if (!$id || !$nom || !$prenom || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('Données invalides.', 'error');
+            redirect('backoffice.php?page=utilisateurs');
+        }
+
+        // Vérifier unicité email
+        $chk = $pdo->prepare('SELECT id FROM utilisateurs WHERE email = ? AND id != ?');
+        $chk->execute([$email, $id]);
+        if ($chk->fetch()) {
+            flash('Cet email est déjà utilisé par un autre compte.', 'error');
+            redirect('backoffice.php?page=utilisateurs');
+        }
+
+        $pdo->prepare('UPDATE utilisateurs SET nom=?, prenom=?, email=?, role=?, civilite=? WHERE id=?')
+            ->execute([$nom, $prenom, $email, $role, $civil, $id]);
+
+        if (strlen($mdp) >= 8) {
+            $pdo->prepare('UPDATE utilisateurs SET mot_de_passe=? WHERE id=?')
+                ->execute([password_hash($mdp, PASSWORD_DEFAULT), $id]);
+        }
+
+        flash('Utilisateur mis à jour avec succès.');
+        redirect('backoffice.php?page=utilisateurs');
+    }
+
     // ── Add direction ─────────────────────────────────────────────
     if ($action === 'add_direction') {
         $lib = trim($_POST['libelle'] ?? '');
