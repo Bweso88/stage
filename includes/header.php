@@ -443,11 +443,17 @@ textarea.form-control{min-height:100px;resize:vertical;}
         <span class="notif-badge"><?= $notifCount ?></span>
         <?php endif; ?>
       </div>
+      <?php
+        $prenom = $user['prenom'] ?? '';
+        $nom    = $user['nom'] ?? '';
+        $initiales = strtoupper(substr($prenom, 0, 1) . substr($nom, 0, 1));
+        if ($initiales === '') $initiales = 'U';
+      ?>
       <div class="topbar-user">
-        <div class="avatar"><?= strtoupper(substr($user['prenom'],0,1) . substr($user['nom'],0,1)) ?></div>
+        <div class="avatar"><?= h($initiales) ?></div>
         <div>
-          <div class="uname"><?= h($user['prenom'] . ' ' . $user['nom']) ?></div>
-          <div class="urole"><?= h(ucfirst($user['role'])) ?></div>
+          <div class="uname"><?= h(trim($prenom . ' ' . $nom)) ?></div>
+          <div class="urole"><?= h(ucfirst($user['role'] ?? '')) ?></div>
         </div>
       </div>
     </div>
