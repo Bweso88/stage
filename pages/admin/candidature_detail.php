@@ -40,16 +40,8 @@ $stageStmt = $pdo->prepare("SELECT * FROM stages WHERE candidature_id = ?");
 $stageStmt->execute([$id]);
 $stage = $stageStmt->fetch();
 
-// Formations du stagiaire
-$formStmt = $pdo->prepare("SELECT * FROM formations WHERE stagiaire_id = ? ORDER BY annee_fin DESC");
-$formStmt->execute([$cand['stagiaire_id'] ?? 0]);
-// Need stagiaire_id from stagiaires table
-$stagStmt2 = $pdo->prepare("SELECT id FROM stagiaires WHERE utilisateur_id = (SELECT utilisateur_id FROM stagiaires WHERE id = ?)");
-
-// Get stagiaire.id
-$stagIdStmt = $pdo->prepare("SELECT s.id FROM stagiaires s JOIN utilisateurs u ON u.id = s.utilisateur_id WHERE s.id = (SELECT stagiaire_id FROM candidatures WHERE id = ?)");
-$stagIdStmt->execute([$id]);
-$stagId = $stagIdStmt->fetchColumn();
+// ID du stagiaire (déjà dans c.stagiaire_id via c.*)
+$stagId = (int)($cand['stagiaire_id'] ?? 0);
 
 $formStmt = $pdo->prepare("SELECT * FROM formations WHERE stagiaire_id = ? ORDER BY annee_fin DESC");
 $formStmt->execute([$stagId]);
@@ -57,10 +49,12 @@ $formations = $formStmt->fetchAll();
 
 $compStmt = $pdo->prepare("SELECT libelle FROM competences WHERE stagiaire_id = ?");
 $compStmt->execute([$stagId]);
-$competences = $compStmt->fetchAll(PDO::FETCH_COLUMN);
+$competences = array_column($compStmt->fetchAll(), 'libelle');
 
 // Pour modal programmation
-$encadrants = $pdo->query("SELECT id, nom, prenom FROM utilisateurs WHERE role IN ('habilite','administrateur','superviseur') AND actif = 1 ORDER BY nom")->fetchAll();
+$encStmt = $pdo->prepare("SELECT id, nom, prenom FROM utilisateurs WHERE role IN ('habilite','administrateur','superviseur') AND actif = 1 ORDER BY nom");
+$encStmt->execute();
+$encadrants = $encStmt->fetchAll();
 
 $canValidNiv1 = hasRole('habilite', 'administrateur');
 $canValidNiv2 = hasRole('superviseur', 'administrateur');
