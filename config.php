@@ -2,6 +2,7 @@
 /**
  * StagIA - Configuration principale
  */
+require_once __DIR__ . '/mailer.php';
 
 // Session cookie hardening
 ini_set('session.cookie_httponly', '1');
@@ -320,7 +321,6 @@ function statusBadge(string $statut): string {
 }
 
 function sendMail(string $to, string $sujet, string $html, string $toName = ''): bool {
-    require_once __DIR__ . '/mailer.php';
     try {
         $mailer = new SmtpMailer();
         return $mailer->send($to, $toName, $sujet, $html);
