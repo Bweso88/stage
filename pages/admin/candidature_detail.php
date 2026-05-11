@@ -22,14 +22,6 @@ $stage_existe = $pdo->prepare('SELECT id FROM stages WHERE candidature_id = ?');
 $stage_existe->execute([$id]);
 $stage_id = $stage_existe->fetchColumn();
 
-$admins = $pdo->prepare('SELECT id, nom, prenom, role FROM utilisateurs WHERE role != ? AND actif = 1 ORDER BY nom');
-$admins->execute(['stagiaire']);
-$admins = $admins->fetchAll();
-
-$directions_stmt = $pdo->prepare('SELECT * FROM directions WHERE actif = 1 ORDER BY libelle');
-$directions_stmt->execute();
-$directions = $directions_stmt->fetchAll();
-
 $val_niv1 = null; $val_niv2 = null;
 foreach ($validations as $v) {
     if ($v['niveau_validation'] === 'niv1') $val_niv1 = $v;
@@ -50,21 +42,21 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
 <div class="page-header d-flex justify-between align-center">
   <div>
     <h1><?= h($c['reference']) ?></h1>
-    <p>D&eacute;pos&eacute;e le <?= h(date('d/m/Y H:i', strtotime($c['date_candidature']))) ?></p>
+    <p>Déposée le <?= h(date('d/m/Y H:i', strtotime($c['date_candidature']))) ?></p>
   </div>
   <div class="d-flex gap-2">
     <?= statusBadge($c['statut_global']) ?>
     <?php if ($canDecideNiv1): ?>
-    <button class="btn btn-warning btn-sm" onclick="openModal('modal-niv1')">D&eacute;cision Niv.1</button>
+    <button class="btn btn-warning btn-sm" onclick="openModal('modal-niv1')">Décision Niv.1</button>
     <?php endif; ?>
     <?php if ($canDecideNiv2): ?>
-    <button class="btn btn-primary btn-sm" onclick="openModal('modal-niv2')">D&eacute;cision Niv.2</button>
+    <button class="btn btn-primary btn-sm" onclick="openModal('modal-niv2')">Décision Niv.2</button>
     <?php endif; ?>
     <?php if ($canCreateStage): ?>
-    <button class="btn btn-success btn-sm" onclick="openModal('modal-creer-stage')">🎓 Programmer le stage</button>
+    <a href="backoffice.php?page=creer_stage&amp;cand_id=<?= $id ?>" class="btn btn-success btn-sm">🎓 Programmer le stage</a>
     <?php endif; ?>
     <?php if ($stage_id): ?>
-    <a href="backoffice.php?page=stage_detail&id=<?= $stage_id ?>" class="btn btn-success btn-sm">🎓 Voir le stage</a>
+    <a href="backoffice.php?page=stage_detail&amp;id=<?= $stage_id ?>" class="btn btn-success btn-sm">🎓 Voir le stage</a>
     <?php endif; ?>
   </div>
 </div>
@@ -74,8 +66,8 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
   <div class="card">
     <div class="card-header"><span class="card-title">📋 Informations candidature</span></div>
     <div class="card-body">
-      <div class="info-row"><span class="info-label">R&eacute;f&eacute;rence</span><span class="info-val fw-bold"><?= h($c['reference']) ?></span></div>
-      <div class="info-row"><span class="info-label">Type</span><span class="info-val"><?= $c['type_candidature']==='offre'?'<span class="badge badge-info">Sur offre</span>':'<span class="badge badge-secondary">Spontan&eacute;e</span>' ?></span></div>
+      <div class="info-row"><span class="info-label">Référence</span><span class="info-val fw-bold"><?= h($c['reference']) ?></span></div>
+      <div class="info-row"><span class="info-label">Type</span><span class="info-val"><?= $c['type_candidature']==='offre'?'<span class="badge badge-info">Sur offre</span>':'<span class="badge badge-secondary">Spontanée</span>' ?></span></div>
       <?php if ($c['offre_titre']): ?>
       <div class="info-row"><span class="info-label">Offre</span><span class="info-val"><?= h($c['offre_ref'] . ' – ' . $c['offre_titre']) ?></span></div>
       <?php endif; ?>
@@ -90,12 +82,12 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
   <div class="card">
     <div class="card-header">
       <span class="card-title">👤 Stagiaire</span>
-      <a href="backoffice.php?page=stagiaire_detail&id=<?= $c['stag_id'] ?>" class="btn btn-secondary btn-sm">Voir profil</a>
+      <a href="backoffice.php?page=stagiaire_detail&amp;id=<?= $c['stag_id'] ?>" class="btn btn-secondary btn-sm">Voir profil</a>
     </div>
     <div class="card-body">
       <div class="info-row"><span class="info-label">Nom</span><span class="info-val fw-bold"><?= h($c['civilite'] . ' ' . $c['prenom'] . ' ' . $c['nom']) ?></span></div>
       <div class="info-row"><span class="info-label">Email</span><span class="info-val"><?= h($c['email']) ?></span></div>
-      <div class="info-row"><span class="info-label">T&eacute;l&eacute;phone</span><span class="info-val"><?= h($c['telephone'] ?? '-') ?></span></div>
+      <div class="info-row"><span class="info-label">Téléphone</span><span class="info-val"><?= h($c['telephone'] ?? '-') ?></span></div>
       <div class="info-row"><span class="info-label">Ville</span><span class="info-val"><?= h($c['ville'] ?? '-') ?></span></div>
       <div class="info-row"><span class="info-label">Niveau</span><span class="info-val"><strong><?= h(strtoupper($c['niveau_etude'])) ?></strong></span></div>
     </div>
@@ -106,7 +98,7 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
 <div class="card mt-4">
   <div class="card-header"><span class="card-title">📝 Lettre de motivation</span></div>
   <div class="card-body">
-    <p style="line-height:1.8;font-size:14px;color:#374151;"><?= nl2br(h($c['motivation'] ?? 'Non renseign&eacute;e.')) ?></p>
+    <p style="line-height:1.8;font-size:14px;color:#374151;"><?= nl2br(h($c['motivation'] ?? 'Non renseignée.')) ?></p>
   </div>
 </div>
 
@@ -114,11 +106,11 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
 <div class="card mt-4">
   <div class="card-header"><span class="card-title">✅ Historique des validations</span></div>
   <?php if (empty($validations)): ?>
-  <div class="card-body"><p class="text-muted text-sm">Aucune d&eacute;cision enregistr&eacute;e.</p></div>
+  <div class="card-body"><p class="text-muted text-sm">Aucune décision enregistrée.</p></div>
   <?php else: ?>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Niveau</th><th>D&eacute;cision</th><th>Validateur</th><th>Commentaire</th><th>Date</th></tr></thead>
+      <thead><tr><th>Niveau</th><th>Décision</th><th>Validateur</th><th>Commentaire</th><th>Date</th></tr></thead>
       <tbody>
         <?php foreach ($validations as $v): ?>
         <tr>
@@ -142,7 +134,7 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
 <div class="modal-overlay" id="modal-niv1">
   <div class="modal">
     <div class="modal-header">
-      <h3>D&eacute;cision Niveau 1 – <?= h($c['reference']) ?></h3>
+      <h3>Décision Niveau 1 – <?= h($c['reference']) ?></h3>
       <button class="modal-close" onclick="closeModal('modal-niv1')">×</button>
     </div>
     <form method="post" action="backoffice.php">
@@ -151,16 +143,16 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
       <input type="hidden" name="niveau" value="niv1">
       <div class="modal-body">
         <div class="form-group">
-          <label>D&eacute;cision</label>
+          <label>Décision</label>
           <select name="statut" class="form-control" required>
             <option value="valide">✅ Valider (passe en Niv.2)</option>
             <option value="rejete">❌ Rejeter</option>
-            <option value="complement">📝 Demander un compl&eacute;ment</option>
+            <option value="complement">📝 Demander un complément</option>
           </select>
         </div>
         <div class="form-group mt-2">
           <label>Commentaire</label>
-          <textarea name="commentaire" class="form-control" rows="4" placeholder="Observations, motivations de la d&eacute;cision..."></textarea>
+          <textarea name="commentaire" class="form-control" rows="4" placeholder="Observations..."></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -177,7 +169,7 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
 <div class="modal-overlay" id="modal-niv2">
   <div class="modal">
     <div class="modal-header">
-      <h3>D&eacute;cision Finale (Niv.2) – <?= h($c['reference']) ?></h3>
+      <h3>Décision Finale (Niv.2) – <?= h($c['reference']) ?></h3>
       <button class="modal-close" onclick="closeModal('modal-niv2')">×</button>
     </div>
     <form method="post" action="backoffice.php">
@@ -186,11 +178,11 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
       <input type="hidden" name="niveau" value="niv2">
       <div class="modal-body">
         <div class="form-group">
-          <label>D&eacute;cision finale</label>
+          <label>Décision finale</label>
           <select name="statut" class="form-control" required>
-            <option value="valide">✅ Valider d&eacute;finitivement</option>
-            <option value="rejete">❌ Rejeter d&eacute;finitivement</option>
-            <option value="complement">📝 Demander un compl&eacute;ment</option>
+            <option value="valide">✅ Valider définitivement</option>
+            <option value="rejete">❌ Rejeter définitivement</option>
+            <option value="complement">📝 Demander un complément</option>
           </select>
         </div>
         <div class="form-group mt-2">
@@ -200,59 +192,7 @@ $canCreateStage = $c['statut_global'] === 'validee' && !$stage_id && hasRole('ad
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="closeModal('modal-niv2')">Annuler</button>
-        <button type="submit" class="btn btn-danger">D&eacute;cision finale</button>
-      </div>
-    </form>
-  </div>
-</div>
-<?php endif; ?>
-
-<!-- Modal Créer Stage -->
-<?php if ($canCreateStage): ?>
-<div class="modal-overlay" id="modal-creer-stage">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <h3>🎓 Programmer le stage – <?= h($c['reference']) ?></h3>
-      <button class="modal-close" onclick="closeModal('modal-creer-stage')">×</button>
-    </div>
-    <form method="post" action="backoffice.php">
-      <input type="hidden" name="action" value="creer_stage_depuis_cand">
-      <input type="hidden" name="candidature_id" value="<?= $id ?>">
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="field-required">Date de d&eacute;but</label>
-            <input type="date" name="date_debut" class="form-control" required value="<?= date('Y-m-d') ?>">
-          </div>
-          <div class="form-group">
-            <label class="field-required">Date de fin</label>
-            <input type="date" name="date_fin" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Encadrant</label>
-            <select name="encadrant_id" class="form-control">
-              <option value="">-- S&eacute;lectionnez --</option>
-              <?php foreach ($admins as $a): ?>
-              <option value="<?= $a['id'] ?>"><?= h($a['prenom'] . ' ' . $a['nom']) ?> (<?= h($a['role']) ?>)</option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Transport</label>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
-              <input type="checkbox" name="remboursement_transport" id="transp_check" onchange="document.getElementById('montant_wrap').style.display=this.checked?'':'none'">
-              <label for="transp_check" style="font-size:13px;font-weight:500;">Remboursement transport</label>
-            </div>
-          </div>
-          <div class="form-group" id="montant_wrap" style="display:none">
-            <label>Montant transport (GNF/mois)</label>
-            <input type="number" name="montant_transport" class="form-control" value="0" min="0">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-creer-stage')">Annuler</button>
-        <button type="submit" class="btn btn-success">Cr&eacute;er le stage</button>
+        <button type="submit" class="btn btn-danger">Décision finale</button>
       </div>
     </form>
   </div>
