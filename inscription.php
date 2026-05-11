@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/mailer.php';
 
 if (isLoggedIn()) {
     if (isStagiaire()) redirect('/espace-stagiaire.php');
