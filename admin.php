@@ -188,7 +188,7 @@ $flash = getFlash();
         </form>
 
         <div class="back-link">
-            <a href="/index.php">← Retour au site</a>
+            <a href="<?= BASE ?>/index.php">← Retour au site</a>
         </div>
     </div>
 </body>

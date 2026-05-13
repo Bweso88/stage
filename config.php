@@ -2,6 +2,8 @@
 /**
  * StagIA - Configuration principale
  */
+define('BASE', '/stage2');
+
 require_once __DIR__ . '/mailer.php';
 
 // Session cookie hardening
@@ -78,11 +80,10 @@ function h(string $s): string {
 }
 
 function redirect(string $url): void {
-    // Empêche les open redirects : on n'accepte que les chemins internes
     if (!str_starts_with($url, '/') || str_starts_with($url, '//')) {
         $url = '/';
     }
-    header("Location: $url");
+    header('Location: ' . BASE . $url);
     exit;
 }
 

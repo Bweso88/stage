@@ -176,8 +176,8 @@ if ($offreId) {
 <body>
 
 <nav class="navbar">
-    <a href="/index.php" class="brand">Stag<span>IA</span></a>
-    <a href="/index.php" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none">← Retour aux offres</a>
+    <a href="<?= BASE ?>/index.php" class="brand">Stag<span>IA</span></a>
+    <a href="<?= BASE ?>/index.php" style="color:rgba(255,255,255,.7);font-size:13px;text-decoration:none">← Retour aux offres</a>
 </nav>
 
 <div class="container">
@@ -350,7 +350,7 @@ if ($offreId) {
                 </div>
 
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px">
-                    <a href="/index.php" class="btn btn-ghost">← Annuler</a>
+                    <a href="<?= BASE ?>/index.php" class="btn btn-ghost">← Annuler</a>
                     <button type="submit" class="btn btn-red" style="font-size:15px;padding:12px 28px">
                         Créer mon compte & Soumettre →
                     </button>
@@ -360,7 +360,7 @@ if ($offreId) {
     </div>
 
     <p style="text-align:center;font-size:13px;color:#6b7280">
-        Déjà inscrit ? <a href="/index.php">Connectez-vous</a>
+        Déjà inscrit ? <a href="<?= BASE ?>/index.php">Connectez-vous</a>
     </p>
 </div>
 
