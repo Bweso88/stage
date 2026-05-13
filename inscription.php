@@ -48,10 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$errors) {
             $hash = password_hash($mdp, PASSWORD_DEFAULT);
-            $civ  = $_POST['civilite'] ?? 'M.';
 
-            $pdo->prepare("INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, civilite) VALUES (?,?,?,?,'stagiaire',?)")
-                ->execute([$nom, $prenom, $email, $hash, $civ]);
+            $pdo->prepare("INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role) VALUES (?,?,?,?,'stagiaire')")
+                ->execute([$nom, $prenom, $email, $hash]);
             $userId = $pdo->lastInsertId();
 
             // Créer le profil stagiaire
