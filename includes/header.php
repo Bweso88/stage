@@ -658,7 +658,7 @@ $flash = getFlash();
                     <span class="notif-dot"></span>
                 <?php endif; ?>
             </button>
-            <a href="<?= BASE ?>/index.php" class="btn btn-ghost btn-sm" target="_blank">🌐 Site public</a>
+            <a href="/stage2/index.php" class="btn btn-ghost btn-sm" target="_blank">🌐 Site public</a>
         </div>
     </header>
 

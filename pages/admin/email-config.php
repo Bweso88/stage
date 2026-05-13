@@ -113,7 +113,7 @@ $apiStatus  = (!empty($apiKey) && $apiKey !== 'sk-ant-api03-YOUR_KEY_HERE');
                 </table>
 
                 <div style="margin-top:16px">
-                    <a href="<?= BASE ?>/api/test.php" target="_blank" class="btn btn-ghost btn-sm">📋 Rapport JSON complet</a>
+                    <a href="/stage2/api/test.php" target="_blank" class="btn btn-ghost btn-sm">📋 Rapport JSON complet</a>
                 </div>
             </div>
         </div>

@@ -209,7 +209,7 @@ $peutRenouveler = $stageActif
     <div class="brand">Stag<span>IA</span></div>
     <div class="nav-user">
         <span>Bonjour, <?= h($stag['prenom']) ?></span>
-        <a href="<?= BASE ?>/logout.php" class="btn btn-ghost btn-sm">Déconnexion</a>
+        <a href="/stage2/logout.php" class="btn btn-ghost btn-sm">Déconnexion</a>
     </div>
 </nav>
 
@@ -243,7 +243,7 @@ $peutRenouveler = $stageActif
             (<?= date('d/m/Y', strtotime($stageActif['date_debut'])) ?> → <?= date('d/m/Y', strtotime($stageActif['date_fin'])) ?>)
         </div>
         <div style="display:flex;gap:8px">
-            <a href="<?= BASE ?>/pages/lettre_public.php?id=<?= $stageActif['id'] ?>" class="btn btn-light btn-sm">🖨 Lettre</a>
+            <a href="/stage2/pages/lettre_public.php?id=<?= $stageActif['id'] ?>" class="btn btn-light btn-sm">🖨 Lettre</a>
             <?php if ($peutRenouveler): ?>
             <a href="?show=renouvellement" class="btn btn-light btn-sm">🔄 Renouvellement</a>
             <?php endif; ?>
@@ -302,7 +302,7 @@ $peutRenouveler = $stageActif
                     </div>
                 </div>
                 <div style="display:flex;gap:10px;margin-top:18px">
-                    <a href="<?= BASE ?>/espace-stagiaire.php" class="btn btn-light">Annuler</a>
+                    <a href="/stage2/espace-stagiaire.php" class="btn btn-light">Annuler</a>
                     <button type="submit" class="btn btn-red">Soumettre la candidature</button>
                 </div>
             </form>
@@ -337,7 +337,7 @@ $peutRenouveler = $stageActif
                     </div>
                 </div>
                 <div style="display:flex;gap:10px;margin-top:18px">
-                    <a href="<?= BASE ?>/espace-stagiaire.php" class="btn btn-light">Annuler</a>
+                    <a href="/stage2/espace-stagiaire.php" class="btn btn-light">Annuler</a>
                     <button type="submit" class="btn btn-navy">Soumettre la demande</button>
                 </div>
             </form>

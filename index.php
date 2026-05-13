@@ -152,15 +152,15 @@ $offres = $pdo->query("
 <nav class="navbar">
     <div class="brand">Stag<span>IA</span></div>
     <div class="nav-links">
-        <a href="<?= BASE ?>/admin.php" class="btn btn-ghost btn-sm">Administration</a>
-        <a href="<?= BASE ?>/inscription.php" class="btn btn-red btn-sm">Postuler</a>
+        <a href="/stage2/admin.php" class="btn btn-ghost btn-sm">Administration</a>
+        <a href="/stage2/inscription.php" class="btn btn-red btn-sm">Postuler</a>
     </div>
 </nav>
 
 <div class="hero">
     <h1>Offres de stage</h1>
     <p>Découvrez nos opportunités de stage et rejoignez notre organisation.</p>
-    <a href="<?= BASE ?>/inscription.php" class="btn btn-red" style="font-size:15px;padding:12px 28px">Déposer ma candidature →</a>
+    <a href="/stage2/inscription.php" class="btn btn-red" style="font-size:15px;padding:12px 28px">Déposer ma candidature →</a>
 </div>
 
 <div class="container section">
@@ -175,7 +175,7 @@ $offres = $pdo->query("
             <div style="text-align:center;padding:40px;background:#fff;border-radius:12px;border:1px solid #e2e4ea">
                 <div style="font-size:40px;margin-bottom:12px">📭</div>
                 <p style="color:#6b7280">Aucune offre disponible pour le moment.</p>
-                <a href="<?= BASE ?>/inscription.php" class="btn btn-red" style="margin-top:16px">Candidature spontanée</a>
+                <a href="/stage2/inscription.php" class="btn btn-red" style="margin-top:16px">Candidature spontanée</a>
             </div>
             <?php else: ?>
             <div class="offres-grid">
@@ -202,7 +202,7 @@ $offres = $pdo->query("
                                 Limite : <?= date('d/m/Y', strtotime($o['date_limite'])) ?>
                                 <?php endif; ?>
                             </div>
-                            <a href="<?= BASE ?>/inscription.php?offre_id=<?= $o['id'] ?>" class="btn btn-red btn-sm">Postuler</a>
+                            <a href="/stage2/inscription.php?offre_id=<?= $o['id'] ?>" class="btn btn-red btn-sm">Postuler</a>
                         </div>
                     </div>
                 </div>
@@ -248,7 +248,7 @@ $offres = $pdo->query("
                     <p style="font-size:13.5px;color:#6b7280;margin-bottom:20px;line-height:1.6">
                         Créez votre compte et soumettez votre candidature en quelques minutes.
                     </p>
-                    <a href="<?= BASE ?>/inscription.php" class="btn btn-red btn-full">Créer mon compte →</a>
+                    <a href="/stage2/inscription.php" class="btn btn-red btn-full">Créer mon compte →</a>
                 </div>
             </div>
         </div>
