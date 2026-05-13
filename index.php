@@ -47,7 +47,7 @@ $offres = $pdo->query("
     LEFT JOIN directions d ON d.id = o.direction_id
     LEFT JOIN domaines dom ON dom.id = o.domaine_id
     WHERE o.statut = 'ouverte'
-    ORDER BY o.created_at DESC
+    ORDER BY o.date_publication DESC, o.id DESC
 ")->fetchAll();
 ?>
 <!DOCTYPE html>
