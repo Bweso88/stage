@@ -5,7 +5,7 @@ $id  = (int)($_GET['id'] ?? 0);
 $stmt = $pdo->prepare("
     SELECT c.*,
            u.nom, u.prenom, u.email, u.civilite,
-           st.niveau_etude, st.telephone, st.ville,
+           st.niveau_etude, st.telephone, st.ville, st.cv_fichier,
            d.libelle AS direction, dom.libelle AS domaine,
            o.titre AS offre_titre, o.reference AS offre_ref
     FROM candidatures c
@@ -100,8 +100,13 @@ $niv2Done = array_filter($validations, fn($v) => $v['niveau_validation'] === 'ni
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
-                <div style="margin-top:10px">
+                <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
                     <a href="backoffice.php?page=stagiaire_detail&id=<?= $stagId ?>" class="btn btn-ghost btn-sm">Voir profil complet</a>
+                    <?php if ($cand['cv_fichier']): ?>
+                    <a href="/stage2/<?= h($cand['cv_fichier']) ?>" target="_blank" class="btn btn-ghost btn-sm" download>📎 Télécharger le CV</a>
+                    <?php else: ?>
+                    <span class="btn btn-ghost btn-sm" style="opacity:.5;cursor:default">📎 Pas de CV</span>
+                    <?php endif; ?>
                     <a href="backoffice.php?page=analyse-cv&stagiaire_id=<?= $stagId ?>&candidature_id=<?= $id ?>" class="btn btn-ghost btn-sm">🤖 Analyse IA</a>
                 </div>
             </div>
