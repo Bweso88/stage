@@ -30,6 +30,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dirId   = (int)($_POST['direction_id'] ?? 0) ?: null;
         $motiv   = trim($_POST['motivation'] ?? '');
 
+        // Upload CV si fourni
+        $cvErreur = '';
+        if (!empty($_FILES['cv_fichier']['name'])) {
+            $ext = strtolower(pathinfo($_FILES['cv_fichier']['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, ['pdf','doc','docx'])) {
+                $cvErreur = 'Le CV doit être au format PDF, DOC ou DOCX.';
+            } elseif ($_FILES['cv_fichier']['size'] > 5 * 1024 * 1024) {
+                $cvErreur = 'Le CV ne doit pas dépasser 5 Mo.';
+            } else {
+                $cvName = 'cv_' . $stagId . '_' . time() . '.' . $ext;
+                move_uploaded_file($_FILES['cv_fichier']['tmp_name'], __DIR__ . '/uploads/cv/' . $cvName);
+                $pdo->prepare("UPDATE stagiaires SET cv_fichier = ? WHERE id = ?")
+                    ->execute(['uploads/cv/' . $cvName, $stagId]);
+            }
+        } elseif (!$stag['cv_fichier']) {
+            $cvErreur = 'Le CV est obligatoire pour soumettre une candidature.';
+        }
+
+        if ($cvErreur) {
+            flash($cvErreur, 'error');
+            redirect('/espace-stagiaire.php?show=candidature');
+        }
+
         $score = calculerScore($stagId);
         $ref   = genRef('CAND', 'candidatures', 'reference');
         $pdo->prepare("INSERT INTO candidatures (reference, stagiaire_id, offre_id, type_candidature, domaine_id, direction_id, score_tri, motivation) VALUES (?,?,?,?,?,?,?,?)")
@@ -258,7 +281,7 @@ $peutRenouveler = $stageActif
             <div class="card-title">📩 Nouvelle candidature</div>
         </div>
         <div class="card-body">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <?= csrfField() ?>
                 <input type="hidden" name="nouvelle_candidature" value="1">
                 <div class="form-grid">
@@ -295,6 +318,13 @@ $peutRenouveler = $stageActif
                             <option value="<?= $d['id'] ?>"><?= h($d['libelle']) ?></option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+                    <div class="form-group full">
+                        <label>
+                            CV (PDF, DOC, DOCX — max 5 Mo)
+                            <?= $stag['cv_fichier'] ? '<span style="color:#16a34a;font-weight:normal"> — CV actuel disponible, laisser vide pour conserver</span>' : '<span style="color:#e8001c"> *</span>' ?>
+                        </label>
+                        <input type="file" name="cv_fichier" accept=".pdf,.doc,.docx" <?= !$stag['cv_fichier'] ? 'required' : '' ?>>
                     </div>
                     <div class="form-group full">
                         <label>Lettre de motivation</label>
