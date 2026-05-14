@@ -256,14 +256,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Notification et email si validée définitivement
         if ($newStatut === 'validee') {
-            $stagStmt = $pdo->prepare("SELECT s.id, u.email, u.prenom FROM stagiaires s JOIN utilisateurs u ON u.id = s.utilisateur_id WHERE s.id = ?");
+            $stagStmt = $pdo->prepare("SELECT s.utilisateur_id, u.email, u.prenom FROM stagiaires s JOIN utilisateurs u ON u.id = s.utilisateur_id WHERE s.id = ?");
             $stagStmt->execute([$cand['stagiaire_id']]);
             $stag = $stagStmt->fetch();
 
             if ($stag) {
                 $pdo->prepare("INSERT INTO notifications (utilisateur_id, type_notification, objet, message) VALUES (?, 'candidature', ?, ?)")
                     ->execute([
-                        $stag['id'],
+                        $stag['utilisateur_id'],
                         'Candidature validée',
                         'Votre candidature ' . $cand['reference'] . ' a été validée. Un stage vous sera attribué prochainement.'
                     ]);
@@ -356,14 +356,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stageId = $pdo->lastInsertId();
 
         // Email lettre de stage
-        $stagStmt = $pdo->prepare("SELECT s.*, u.email, u.prenom, u.nom FROM stagiaires s JOIN utilisateurs u ON u.id = s.utilisateur_id WHERE s.id = ?");
+        $stagStmt = $pdo->prepare("SELECT s.*, s.utilisateur_id AS uid, u.email, u.prenom, u.nom FROM stagiaires s JOIN utilisateurs u ON u.id = s.utilisateur_id WHERE s.id = ?");
         $stagStmt->execute([$cand['stagiaire_id']]);
         $stag = $stagStmt->fetch();
 
         if ($stag) {
             $pdo->prepare("INSERT INTO notifications (utilisateur_id, type_notification, objet, message) VALUES (?, 'stage', ?, ?)")
                 ->execute([
-                    $stag['id'],
+                    $stag['uid'],
                     'Stage créé',
                     'Votre stage ' . $ref . ' a été créé. Début le ' . date('d/m/Y', strtotime($dateDebut)) . '.'
                 ]);
