@@ -152,7 +152,7 @@ function stepFolders(): array {
         if (!is_dir($dir)) mkdir($dir, octdec($perm), true);
         @chmod($dir, octdec($perm));
         $ok = is_writable($dir);
-        $lines[] = "<li>".($ok?'✅':'⚠️')." <code>".basename($dir)."</code> — ".($ok?'accessible en écriture':'vérifiez les permissions manuellement')."</li>";
+        $lines[] = "<li>".($ok?'✅':'⚠️')." <code>".basename($dir)."/</code> — ".($ok?'accessible en écriture':'vérifiez les permissions manuellement')."</li>";
     }
     /* Créer le fichier verrou */
     file_put_contents(LOCK_FILE, date('Y-m-d H:i:s'));
