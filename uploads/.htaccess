@@ -1,0 +1,4 @@
+# Interdire l'exécution de scripts dans ce dossier
+php_flag engine off
+Options -ExecCGI
+AddHandler cgi-script .php .pl .py .jsp .asp .sh

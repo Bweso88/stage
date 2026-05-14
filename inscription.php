@@ -38,6 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Le mot de passe doit contenir au moins 6 caractères.';
         } elseif ($mdp !== $mdp2) {
             $errors[] = 'Les mots de passe ne correspondent pas.';
+        } elseif (empty($_FILES['cv_fichier']['name'])) {
+            $errors[] = 'Le CV est obligatoire.';
+        } elseif (!in_array(strtolower(pathinfo($_FILES['cv_fichier']['name'], PATHINFO_EXTENSION)), ['pdf','doc','docx'])) {
+            $errors[] = 'Le CV doit être au format PDF, DOC ou DOCX.';
+        } elseif ($_FILES['cv_fichier']['size'] > 5 * 1024 * 1024) {
+            $errors[] = 'Le CV ne doit pas dépasser 5 Mo.';
         } else {
             $check = $pdo->prepare("SELECT id FROM utilisateurs WHERE email = ?");
             $check->execute([$email]);
@@ -61,8 +67,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nais   = $_POST['date_naissance'] ?? null;
             $sexe   = $_POST['sexe'] ?? 'M';
 
-            $pdo->prepare("INSERT INTO stagiaires (utilisateur_id, niveau_etude, telephone, ville, date_naissance, sexe, domaine_principal_id) VALUES (?,?,?,?,?,?,?)")
-                ->execute([$userId, $niveau, $tel, $ville, $nais ?: null, $sexe, $domId]);
+            // Upload CV
+            $ext    = strtolower(pathinfo($_FILES['cv_fichier']['name'], PATHINFO_EXTENSION));
+            $cvName = 'cv_' . $userId . '_' . time() . '.' . $ext;
+            $cvPath = __DIR__ . '/uploads/cv/' . $cvName;
+            move_uploaded_file($_FILES['cv_fichier']['tmp_name'], $cvPath);
+            $cvRelPath = 'uploads/cv/' . $cvName;
+
+            $pdo->prepare("INSERT INTO stagiaires (utilisateur_id, niveau_etude, telephone, ville, date_naissance, sexe, domaine_principal_id, cv_fichier) VALUES (?,?,?,?,?,?,?,?)")
+                ->execute([$userId, $niveau, $tel, $ville, $nais ?: null, $sexe, $domId, $cvRelPath]);
             $stagId = $pdo->lastInsertId();
 
             // Formation
@@ -200,7 +213,7 @@ if ($offreId) {
             <p>Créez votre compte et soumettez votre candidature en une seule étape.</p>
         </div>
         <div class="card-body">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
             <?= csrfField() ?>
                 <input type="hidden" name="etape1" value="1">
 
@@ -300,6 +313,15 @@ if ($offreId) {
                     <div class="form-group full">
                         <label>Compétences (séparées par des virgules)</label>
                         <input type="text" name="competences" placeholder="PHP, MySQL, JavaScript, Excel...">
+                    </div>
+                </div>
+
+                <!-- CV -->
+                <div class="section-title" style="margin-top:24px">📎 Votre CV <span style="color:#e8001c">*</span></div>
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>CV (PDF, DOC ou DOCX — max 5 Mo) *</label>
+                        <input type="file" name="cv_fichier" required accept=".pdf,.doc,.docx">
                     </div>
                 </div>
 
