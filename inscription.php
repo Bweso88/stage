@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Candidature automatique si offre sélectionnée
             $offreIdPost = (int)($_POST['offre_id'] ?? 0);
             $typeC       = $offreIdPost ? 'offre' : 'spontanee';
-            $domCandId   = (int)($_POST['domaine_cand_id'] ?? 0) ?: $domId;
+            $domCandId   = ((int)($_POST['domaine_cand_id'] ?? 0)) ?: ($domId ?: null);
             $dirId       = (int)($_POST['direction_id'] ?? 0) ?: null;
             $motiv       = trim($_POST['motivation'] ?? '');
 

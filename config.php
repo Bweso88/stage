@@ -50,7 +50,7 @@ function getPDO(): PDO {
     if ($pdo !== null) return $pdo;
 
     $host = $_ENV['DB_HOST'] ?? 'localhost';
-    $name = $_ENV['DB_NAME'] ?? 'stagia';
+    $name = $_ENV['DB_NAME'] ?? 'stage';
     $user = $_ENV['DB_USER'] ?? 'root';
     $pass = $_ENV['DB_PASS'] ?? '';
 
