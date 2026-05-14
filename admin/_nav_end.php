@@ -1,16 +1,16 @@
-  </div><!-- /main-content -->
+  </main>
 </div><!-- /wrapper -->
 
 <script src="../js/bootstrap.bundle.min.js"></script>
 <script>
 (function(){
-  var saved = localStorage.getItem("theme") || "light";
-  document.documentElement.dataset.theme = saved;
+  var t = localStorage.getItem("fpTheme") || "light";
+  document.documentElement.dataset.theme = t;
 })();
 function toggleTheme(){
-  var html = document.documentElement;
-  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
-  localStorage.setItem("theme", html.dataset.theme);
+  var h = document.documentElement;
+  h.dataset.theme = h.dataset.theme==="dark" ? "light" : "dark";
+  localStorage.setItem("fpTheme", h.dataset.theme);
 }
 </script>
 </body>
