@@ -3,14 +3,6 @@ $videoDir = "videos/";
 $viewsDir = "views/";
 if (!file_exists($viewsDir)) mkdir($viewsDir, 0777, true);
 
-/* Compteur de vues AJAX */
-if (isset($_GET['view'])) {
-    $video   = basename($_GET['view']);
-    $vf      = $viewsDir . pathinfo($video, PATHINFO_FILENAME) . ".txt";
-    $count   = file_exists($vf) ? (int)file_get_contents($vf) + 1 : 1;
-    file_put_contents($vf, $count);
-    exit;
-}
 
 $theme     = isset($_GET['theme']) ? basename($_GET['theme']) : '';
 $themePath = $videoDir . $theme . "/";
@@ -110,14 +102,6 @@ a{text-decoration:none;color:inherit;}
 .empty-state{text-align:center;padding:60px 20px;}
 .empty-state .big-icon{font-size:4rem;margin-bottom:16px;}
 
-.modal-content{border:none;border-radius:14px;overflow:hidden;background:#1c1d1f;}
-.modal-header{background:#111;border:none;padding:16px 20px;}
-.modal-title{color:#fff;font-weight:700;font-size:1rem;}
-.modal-body{padding:0;background:#000;}
-.modal-body video{width:100%;max-height:70vh;display:block;}
-.modal-footer{background:#111;border:none;padding:12px 20px;}
-.modal-footer .video-meta{color:#9ca3af;font-size:.82rem;display:flex;align-items:center;gap:6px;}
-
 footer{background:#111;padding:28px 5%;text-align:center;color:#4b5563;font-size:.82rem;margin-top:40px;}
 footer a{color:#6b7280;}footer a:hover{color:#fff;}
 </style>
@@ -186,9 +170,7 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
             $views       = file_exists($vf) ? (int)file_get_contents($vf) : 0;
             $displayName = ucfirst(str_replace(['_','-'], ' ', $filename));
           ?>
-          <div class="video-card"
-               data-bs-toggle="modal" data-bs-target="#videoModal"
-               onclick="openVideo('<?php echo htmlspecialchars($video); ?>','<?php echo addslashes($displayName); ?>','<?php echo $views; ?>')">
+          <a href="watch.php?theme=<?php echo urlencode($theme); ?>&video=<?php echo urlencode($file); ?>" class="video-card">
             <div class="video-thumb">
               <video preload="metadata" muted>
                 <source src="<?php echo htmlspecialchars($video); ?>#t=0.1" type="video/mp4">
@@ -207,7 +189,7 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
                 <?php echo $views; ?> vue(s)
               </div>
             </div>
-          </div>
+          </a>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
@@ -231,28 +213,6 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
   </aside>
 </div>
 
-<div class="modal fade" id="videoModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle">Lecture</h5>
-        <button type="button" class="btn-close" style="filter:invert(1)" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <video id="modalVideo" controls autoplay>
-          <source src="" type="video/mp4">
-        </video>
-      </div>
-      <div class="modal-footer">
-        <div class="video-meta">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          <span id="modalViews">0 vue(s)</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <footer>
   &copy; <?php echo date('Y'); ?> DIDSI – DRH Service Formation &nbsp;|&nbsp;
   <a href="index.php">Accueil</a> &nbsp;|&nbsp;
@@ -260,17 +220,5 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
 </footer>
 
 <script src="js/bootstrap.bundle.min.js"></script>
-<script>
-function openVideo(src, title, views) {
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalViews').textContent = views + ' vue(s)';
-    document.getElementById('modalVideo').src = src;
-    fetch("videos.php?theme=<?php echo urlencode($theme); ?>&view=" + encodeURIComponent(src)).catch(()=>{});
-}
-document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
-    const v = document.getElementById('modalVideo');
-    v.pause(); v.src = "";
-});
-</script>
 </body>
 </html>
