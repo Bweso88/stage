@@ -28,12 +28,12 @@ $coverImg   = $coverFiles ? $coverFiles[0] : "";
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>FormaPro – <?php echo htmlspecialchars($theme ?: 'Vidéos'); ?></title>
+<title>MucoAcadémie – <?php echo htmlspecialchars($theme ?: 'Vidéos'); ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <style>
 :root{
-  --navy:#1c1d1f;--indigo:#6366f1;--indigo-d:#4f46e5;
+  --navy:#0d1b4b;--indigo:#e8192c;--indigo-d:#c0141f;
   --bg:#f5f7fa;--card:#ffffff;--muted:#6b7280;--border:#e5e7eb;--radius:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -51,9 +51,9 @@ a{text-decoration:none;color:inherit;}
 .navbar-links a:hover{color:#fff;}
 .btn-nav{background:var(--indigo);color:#fff !important;padding:6px 18px;border-radius:6px;font-weight:600;font-size:.82rem;}
 
-.course-banner{background:linear-gradient(135deg,#1c1d1f,#1e3a5f);padding:40px 5%;color:#fff;}
+.course-banner{background:linear-gradient(135deg,#0d1b4b,#1a2e6e);padding:40px 5%;color:#fff;}
 .breadcrumb-custom{display:flex;align-items:center;gap:8px;color:#9ca3af;font-size:.85rem;margin-bottom:16px;}
-.breadcrumb-custom a{color:#a5b4fc;transition:color .2s;}
+.breadcrumb-custom a{color:#ff8a94;transition:color .2s;}
 .breadcrumb-custom a:hover{color:#fff;}
 .breadcrumb-sep{color:#4b5563;}
 .course-banner h1{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:800;margin-bottom:12px;}
@@ -77,7 +77,7 @@ a{text-decoration:none;color:inherit;}
   background:rgba(0,0,0,.25);opacity:0;transition:opacity .25s;}
 .video-card:hover .video-thumb-overlay{opacity:1;}
 .play-btn{width:48px;height:48px;background:var(--indigo);border-radius:50%;display:flex;
-  align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(99,102,241,.5);}
+  align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(232,25,44,.5);}
 .play-btn svg{width:20px;height:20px;fill:#fff;margin-left:3px;}
 .video-body{padding:12px 14px 14px;}
 .video-title{font-size:.9rem;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:6px;
@@ -113,7 +113,7 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
 <header class="navbar">
   <a href="index.php" class="navbar-brand">
     <img src="images/MUCODEC.gif" width="36" height="36" alt="Logo">
-    Forma<span>Pro</span>
+    Muco<span>Académie</span>
   </a>
   <nav class="navbar-links">
     <a href="index.php">Accueil</a>

@@ -16,7 +16,7 @@ if ($isAdmin) $nav[] = ["users.php","M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10
 <html lang="fr" id="adminRoot">
 <head>
 <meta charset="UTF-8">
-<title><?php echo $pageTitle ?? "Admin"; ?> — FormaPro</title>
+<title><?php echo $pageTitle ?? "Admin"; ?> — MucoAcadémie</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 /* ═══════════════════════════════════════════════
@@ -34,10 +34,10 @@ if ($isAdmin) $nav[] = ["users.php","M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10
   --muted:    #6b7280;
   --subtle:   #374151;
 
-  /* Accent */
-  --indigo:   #6366f1;
-  --indigo-h: #4f46e5;
-  --indigo-l: rgba(99,102,241,.12);
+  /* Accent — MUCODEC rouge */
+  --indigo:   #e8192c;
+  --indigo-h: #c0141f;
+  --indigo-l: rgba(232,25,44,.12);
 
   /* Status */
   --green:    #10b981;
@@ -256,7 +256,7 @@ button { font-family: inherit; }
 }
 .field input:focus, .field select:focus {
   border-color: var(--indigo);
-  box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+  box-shadow: 0 0 0 3px rgba(232,25,44,.15);
 }
 
 /* Table */
@@ -318,7 +318,7 @@ button { font-family: inherit; }
 <header class="adm-top">
   <a href="dashboard.php" class="adm-top-logo">
     <img src="../images/MUCODEC.gif" width="30" height="30" alt="">
-    Forma<span>Pro</span>
+    Muco<span>Académie</span>
   </a>
   <div class="adm-top-right">
     <div class="adm-user">

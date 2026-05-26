@@ -23,17 +23,17 @@ $colors = ["#6366f1","#0ea5e9","#10b981","#f59e0b","#ef4444","#8b5cf6","#06b6d4"
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>FormaPro – Votre espace de formation vidéo</title>
+<title>MucoAcadémie – Votre espace de formation vidéo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <style>
 /* ===== VARIABLES ===== */
 :root{
-  --navy:#1c1d1f;
-  --navy2:#2d2f31;
-  --indigo:#6366f1;
-  --indigo-d:#4f46e5;
-  --sky:#0ea5e9;
+  --navy:#0d1b4b;
+  --navy2:#1a2e6e;
+  --indigo:#e8192c;
+  --indigo-d:#c0141f;
+  --sky:#1a2e6e;
   --bg:#f5f7fa;
   --card:#ffffff;
   --muted:#6b7280;
@@ -61,15 +61,15 @@ img{display:block;}
 .btn-nav:hover{background:var(--indigo-d);}
 
 /* ===== HERO ===== */
-.hero{background:linear-gradient(135deg,#1c1d1f 0%,#1e3a5f 50%,#1c1d1f 100%);
+.hero{background:linear-gradient(135deg,#0d1b4b 0%,#1a2e6e 50%,#0d1b4b 100%);
   padding:80px 5% 90px;position:relative;overflow:hidden;}
 .hero::before{content:"";position:absolute;top:-60px;right:-60px;width:420px;height:420px;
-  border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.25) 0%,transparent 70%);}
+  border-radius:50%;background:radial-gradient(circle,rgba(232,25,44,.25) 0%,transparent 70%);}
 .hero::after{content:"";position:absolute;bottom:-80px;left:10%;width:300px;height:300px;
   border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,.2) 0%,transparent 70%);}
 .hero-inner{max-width:680px;position:relative;z-index:1;}
-.hero-badge{display:inline-block;background:rgba(99,102,241,.2);border:1px solid rgba(99,102,241,.4);
-  color:#a5b4fc;padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:600;
+.hero-badge{display:inline-block;background:rgba(232,25,44,.2);border:1px solid rgba(232,25,44,.4);
+  color:#ff8a94;padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:600;
   letter-spacing:.05em;text-transform:uppercase;margin-bottom:20px;}
 .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;color:#fff;line-height:1.2;margin-bottom:16px;}
 .hero h1 span{color:var(--indigo);}
@@ -150,7 +150,7 @@ footer{background:#111;padding:40px 5% 24px;}
 <header class="navbar">
   <a href="index.php" class="navbar-brand">
     <img src="images/MUCODEC.gif" width="38" height="38" alt="Logo">
-    Forma<span>Pro</span>
+    Muco<span>Académie</span>
   </a>
   <nav class="navbar-links">
     <a href="index.php">Accueil</a>
@@ -230,7 +230,7 @@ footer{background:#111;padding:40px 5% 24px;}
 
 <!-- WHY -->
 <section class="why-section">
-  <h2 class="why-title">Pourquoi <span>FormaPro</span> ?</h2>
+  <h2 class="why-title">Pourquoi <span>MucoAcadémie</span> ?</h2>
   <div class="why-grid">
     <div class="why-card">
       <div class="why-icon">🎬</div>
@@ -258,7 +258,7 @@ footer{background:#111;padding:40px 5% 24px;}
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-brand">Forma<span>Pro</span> · MUCODEC</div>
+    <div class="footer-brand">Muco<span>Académie</span> · MUCODEC</div>
     <nav class="footer-links">
       <a href="index.php">Accueil</a>
       <a href="#formations">Formations</a>
