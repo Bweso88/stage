@@ -3,12 +3,14 @@ $isAdmin = isset($_SESSION["user"]["role"]) && $_SESSION["user"]["role"] === "AD
 $current = basename($_SERVER["PHP_SELF"]);
 $me      = $_SESSION["user"]["fullname"] ?? "?";
 $avatar  = strtoupper(mb_substr($me, 0, 1));
+
 $nav = [
-  ["dashboard.php","M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6","Tableau de bord"],
-  ["upload.php","M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12","Upload vidéo"],
-  ["manage_videos.php","M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z","Gérer les vidéos"],
-  ["manage_themes.php","M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z","Gérer les thèmes"],
+  ["dashboard.php",    "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", "Tableau de bord"],
+  ["upload.php",       "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12", "Upload vidéo"],
+  ["manage_videos.php","M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z", "Gérer les vidéos"],
+  ["manage_themes.php","M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z", "Gérer les thèmes"],
 ];
+$nav[] = ["viewers.php","M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z","Apprenants"];
 if ($isAdmin) $nav[] = ["users.php","M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z","Utilisateurs"];
 ?>
 <!DOCTYPE html>
@@ -18,18 +20,11 @@ if ($isAdmin) $nav[] = ["users.php","M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10
 <title><?php echo $pageTitle ?? "Admin"; ?> — MucoAcadémie</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:#0f1117;--surface:#1a1d27;--surface2:#222535;--border:#2e3148;
-  --text:#e8eaf0;--muted:#6b7280;--subtle:#374151;
-  --indigo:#1a2e6e;--indigo-h:#142457;--indigo-l:rgba(26,46,110,.12);
-  --green:#10b981;--yellow:#f59e0b;--red:#ef4444;--blue:#0ea5e9;
-  --sb:240px;--top:58px;--r:10px;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#222535;--border:#2e3148;--text:#e8eaf0;--muted:#6b7280;--subtle:#374151;--indigo:#1a2e6e;--indigo-h:#142457;--indigo-l:rgba(26,46,110,.12);--green:#10b981;--yellow:#f59e0b;--red:#ef4444;--blue:#0ea5e9;--sb:240px;--top:58px;--r:10px;}
 html,body{height:100%;}
 body{font-family:"Inter","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;display:flex;flex-direction:column;}
-a{text-decoration:none;color:inherit;}
-button{font-family:inherit;}
+a{text-decoration:none;color:inherit;}button{font-family:inherit;}
 .adm-top{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--top);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px 0 0;gap:0;}
 .adm-top-logo{width:var(--sb);display:flex;align-items:center;gap:9px;padding:0 20px;flex-shrink:0;font-weight:800;font-size:1rem;color:var(--text);border-right:1px solid var(--border);height:100%;}
 .adm-top-logo img{background:#fff;border-radius:7px;padding:2px;}
@@ -89,6 +84,11 @@ button{font-family:inherit;}
 .modal-back.open{display:flex;}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:440px;margin:16px;box-shadow:0 24px 64px rgba(0,0,0,.5);}
 .modal-title{font-weight:800;font-size:1.05rem;margin-bottom:20px;color:var(--text);}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;display:flex;align-items:center;gap:14px;}
+.kpi-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.kpi-val{font-size:1.7rem;font-weight:800;line-height:1;}
+.kpi-label{font-size:.75rem;color:var(--muted);margin-top:3px;}
 @media(max-width:768px){.adm-sidebar{display:none;}.adm-main{margin-left:0;padding:16px;}.adm-top-logo{width:auto;}}
 </style>
 </head>
