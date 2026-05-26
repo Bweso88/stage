@@ -1,5 +1,6 @@
-.env
-vendor/
-node_modules/
-*.log
-uploads/
+videos/
+views/
+test_upload.php
+admin/db.php
+.setup_done
+*.bak
