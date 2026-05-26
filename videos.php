@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/viewer_auth.php';
+requireViewerAuth();
+
 $videoDir = "videos/";
 $viewsDir = "views/";
 if (!file_exists($viewsDir)) mkdir($viewsDir, 0777, true);
@@ -32,7 +35,7 @@ $coverImg   = $coverFiles ? $coverFiles[0] : "";
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <style>
 :root{
-  --navy:#0d1b4b;--indigo:#1a2e6e;--indigo-d:#142457;
+  --navy:#0d1b4b;--indigo:#e8192c;--indigo-d:#c0141f;
   --bg:#f5f7fa;--card:#ffffff;--muted:#6b7280;--border:#e5e7eb;--radius:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -47,10 +50,10 @@ a{text-decoration:none;color:inherit;}
 .navbar-links{display:flex;align-items:center;gap:20px;}
 .navbar-links a{color:#d1d5db;font-size:.88rem;transition:color .2s;}
 .navbar-links a:hover{color:#fff;}
-.btn-nav{background:var(--indigo);color:#fff !important;padding:6px 18px;border-radius:6px;font-weight:600;font-size:.82rem;}
+.btn-nav{background:#1a2e6e;color:#fff !important;padding:6px 18px;border-radius:6px;font-weight:600;font-size:.82rem;}
 .course-banner{background:linear-gradient(135deg,#0d1b4b,#1a2e6e);padding:40px 5%;color:#fff;}
 .breadcrumb-custom{display:flex;align-items:center;gap:8px;color:#9ca3af;font-size:.85rem;margin-bottom:16px;}
-.breadcrumb-custom a{color:#93b4e8;transition:color .2s;}
+.breadcrumb-custom a{color:#ff8a94;transition:color .2s;}
 .breadcrumb-custom a:hover{color:#fff;}
 .breadcrumb-sep{color:#4b5563;}
 .course-banner h1{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:800;margin-bottom:12px;}
@@ -61,6 +64,7 @@ a{text-decoration:none;color:inherit;}
 @media(max-width:900px){.page-layout{grid-template-columns:1fr;}.sidebar-courses{display:none;}}
 .videos-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .videos-header h2{font-size:1.2rem;font-weight:700;}
+.videos-header span{color:var(--muted);font-size:.85rem;}
 .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;}
 .video-card{background:var(--card);border-radius:var(--radius);overflow:hidden;cursor:pointer;
   box-shadow:0 2px 8px rgba(0,0,0,.07);transition:transform .25s,box-shadow .25s;}
@@ -70,14 +74,14 @@ a{text-decoration:none;color:inherit;}
 .video-thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,.25);opacity:0;transition:opacity .25s;}
 .video-card:hover .video-thumb-overlay{opacity:1;}
-.play-btn{width:48px;height:48px;background:var(--indigo);border-radius:50%;display:flex;
-  align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(26,46,110,.5);}
+.play-btn{width:48px;height:48px;background:#1a2e6e;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(232,25,44,.5);}
 .play-btn svg{width:20px;height:20px;fill:#fff;margin-left:3px;}
 .video-body{padding:12px 14px 14px;}
 .video-title{font-size:.9rem;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:6px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .video-views{color:var(--muted);font-size:.78rem;display:flex;align-items:center;gap:4px;}
-.video-num{background:var(--indigo);color:#fff;font-size:.7rem;font-weight:700;
+.video-num{background:#1a2e6e;color:#fff;font-size:.7rem;font-weight:700;
   padding:2px 8px;border-radius:12px;display:inline-block;margin-bottom:6px;}
 .sidebar-courses{position:sticky;top:80px;}
 .sidebar-box{background:var(--card);border-radius:var(--radius);padding:18px;
@@ -87,16 +91,20 @@ a{text-decoration:none;color:inherit;}
 .sidebar-theme{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;
   transition:background .15s;color:var(--navy);font-size:.87rem;}
 .sidebar-theme:hover{background:#f3f4f6;}
-.sidebar-theme.active{background:#eef2ff;color:var(--indigo);font-weight:600;}
+.sidebar-theme.active{background:#fff1f2;color:var(--indigo);font-weight:600;}
 .sidebar-theme-icon{font-size:1.1rem;flex-shrink:0;}
 .sidebar-theme-name{flex:1;}
-.sidebar-theme-count{background:#e5e7eb;color:#374151;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:10px;}
-.sidebar-theme.active .sidebar-theme-count{background:#c7d2fe;color:var(--indigo-d);}
+.sidebar-theme-count{background:#e5e7eb;color:#374151;font-size:.7rem;font-weight:600;
+  padding:2px 7px;border-radius:10px;}
+.sidebar-theme.active .sidebar-theme-count{background:#fecaca;color:var(--indigo-d);}
+.empty-state{text-align:center;padding:60px 20px;}
+.empty-state .big-icon{font-size:4rem;margin-bottom:16px;}
 footer{background:#111;padding:28px 5%;text-align:center;color:#4b5563;font-size:.82rem;margin-top:40px;}
 footer a{color:#6b7280;}footer a:hover{color:#fff;}
 </style>
 </head>
 <body>
+
 <header class="navbar">
   <a href="index.php" class="navbar-brand">
     <img src="images/mucoacademie.png" width="36" height="36" alt="Logo">
@@ -105,9 +113,14 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
   <nav class="navbar-links">
     <a href="index.php">Accueil</a>
     <a href="index.php#formations">Formations</a>
+    <?php if (!empty($_SESSION['viewer']['login'])): ?>
+      <span style="color:#6b7280;font-size:.82rem;">👤 <?php echo htmlspecialchars($_SESSION['viewer']['login']); ?></span>
+      <a href="viewer_logout.php" style="color:#9ca3af;font-size:.82rem;">Déconnexion</a>
+    <?php endif; ?>
     <a href="admin/login.php" class="btn-nav">Admin</a>
   </nav>
 </header>
+
 <?php if (!empty($theme) && is_dir($themePath)): ?>
 <div class="course-banner" style="<?php echo $coverImg ? 'background:linear-gradient(135deg,rgba(28,29,31,.85),rgba(30,58,95,.85)),url('.htmlspecialchars($coverImg).') center/cover no-repeat' : ''; ?>">
   <div class="breadcrumb-custom">
@@ -125,31 +138,21 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
 <?php else: ?>
 <div class="course-banner"><h1>Thème introuvable</h1></div>
 <?php endif; ?>
+
 <div class="page-layout">
   <main>
     <?php if (empty($theme) || !is_dir($themePath)): ?>
-      <div style="text-align:center;padding:60px 20px">
-        <div style="font-size:4rem;margin-bottom:16px">🔍</div>
-        <h3>Thème introuvable</h3>
-        <p><a href="index.php" style="color:var(--indigo)">← Retour aux formations</a></p>
-      </div>
+      <div class="empty-state"><div class="big-icon">🔍</div><h3>Thème introuvable</h3><p><a href="index.php" style="color:var(--indigo)">← Retour aux formations</a></p></div>
     <?php elseif (empty($videos)): ?>
-      <div style="text-align:center;padding:60px 20px">
-        <div style="font-size:4rem;margin-bottom:16px">📭</div>
-        <h3>Aucune vidéo dans ce thème</h3>
-      </div>
+      <div class="empty-state"><div class="big-icon">📭</div><h3>Aucune vidéo dans ce thème</h3><p style="color:var(--muted)">Des contenus seront ajoutés prochainement.</p></div>
     <?php else: ?>
-      <div class="videos-header">
-        <h2>Tutoriels disponibles</h2>
-        <span style="color:var(--muted);font-size:.85rem"><?php echo $videoCount; ?> vidéo(s)</span>
-      </div>
+      <div class="videos-header"><h2>Tutoriels disponibles</h2><span><?php echo $videoCount; ?> vidéo(s)</span></div>
       <div class="video-grid">
         <?php foreach ($videos as $idx => $video):
-          $file        = basename($video);
-          $filename    = pathinfo($file, PATHINFO_FILENAME);
-          $vf          = $viewsDir . $filename . ".txt";
-          $views       = file_exists($vf) ? (int)file_get_contents($vf) : 0;
-          $displayName = ucfirst(str_replace(['_','-'], ' ', $filename));
+          $file=$basename=$dn='';
+          $file=basename($video);$filename=pathinfo($file,PATHINFO_FILENAME);
+          $vf=$viewsDir.$filename.".txt";$views=file_exists($vf)?(int)file_get_contents($vf):0;
+          $displayName=ucfirst(str_replace(['_','-'],' ',$filename));
         ?>
           <a href="watch.php?theme=<?php echo urlencode($theme); ?>&video=<?php echo urlencode($file); ?>" class="video-card">
             <div class="video-thumb">
@@ -159,10 +162,7 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
             <div class="video-body">
               <span class="video-num"><?php echo str_pad($idx+1,2,'0',STR_PAD_LEFT); ?></span>
               <div class="video-title"><?php echo htmlspecialchars($displayName); ?></div>
-              <div class="video-views">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                <?php echo $views; ?> vue(s)
-              </div>
+              <div class="video-views"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><?php echo $views; ?> vue(s)</div>
             </div>
           </a>
         <?php endforeach; ?>
@@ -172,7 +172,7 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
   <aside class="sidebar-courses">
     <div class="sidebar-box">
       <h3>📚 Autres formations</h3>
-      <?php foreach ($allThemes as $i => $t): $tn=basename($t); $tc=count(glob($t."/*.mp4")?:[]); ?>
+      <?php foreach ($allThemes as $i => $t): $tn=basename($t);$tc=count(glob($t."/*.mp4")?: []); ?>
         <a href="videos.php?theme=<?php echo urlencode($tn); ?>" class="sidebar-theme <?php echo $tn===$theme?'active':''; ?>">
           <span class="sidebar-theme-icon"><?php echo $icons[$i%count($icons)]; ?></span>
           <span class="sidebar-theme-name"><?php echo htmlspecialchars($tn); ?></span>
@@ -182,6 +182,7 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
     </div>
   </aside>
 </div>
+
 <footer>&copy; <?php echo date('Y'); ?> DIDSI – DRH Service Formation &nbsp;|&nbsp;<a href="index.php">Accueil</a> &nbsp;|&nbsp;<a href="admin/login.php">Administration</a></footer>
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
