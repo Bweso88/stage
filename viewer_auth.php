@@ -15,6 +15,7 @@ if (!file_exists(__DIR__ . '/.viewer_setup_done')) {
             fullname      VARCHAR(200) DEFAULT '',
             direction     VARCHAR(200) DEFAULT '',
             service       VARCHAR(200) DEFAULT '',
+            agence        VARCHAR(200) DEFAULT '',
             created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
             last_seen     DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )");
@@ -36,6 +37,33 @@ if (!file_exists(__DIR__ . '/.viewer_setup_done')) {
             FOREIGN KEY (viewer_id) REFERENCES viewers(id) ON DELETE CASCADE
         )");
         file_put_contents(__DIR__ . '/.viewer_setup_done', date('Y-m-d H:i:s'));
+    } catch (Exception $e) {}
+}
+
+// Création des tables organisation (directions / services / agences)
+if (!file_exists(__DIR__ . '/.org_setup_done')) {
+    try {
+        // Ajout colonne agence si table viewers existait déjà sans elle
+        try { $pdo->exec("ALTER TABLE viewers ADD COLUMN agence VARCHAR(200) DEFAULT ''"); } catch (Exception $e) {}
+        $pdo->exec("CREATE TABLE IF NOT EXISTS org_directions (
+            id   INT AUTO_INCREMENT PRIMARY KEY,
+            nom  VARCHAR(150) NOT NULL,
+            type ENUM('centrale','regionale') NOT NULL DEFAULT 'centrale',
+            UNIQUE KEY uq_dir_nom (nom)
+        )");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS org_services (
+            id           INT AUTO_INCREMENT PRIMARY KEY,
+            direction_id INT NOT NULL,
+            nom          VARCHAR(150) NOT NULL,
+            FOREIGN KEY (direction_id) REFERENCES org_directions(id) ON DELETE CASCADE
+        )");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS org_agences (
+            id           INT AUTO_INCREMENT PRIMARY KEY,
+            direction_id INT NOT NULL,
+            nom          VARCHAR(150) NOT NULL,
+            FOREIGN KEY (direction_id) REFERENCES org_directions(id) ON DELETE CASCADE
+        )");
+        file_put_contents(__DIR__ . '/.org_setup_done', date('Y-m-d H:i:s'));
     } catch (Exception $e) {}
 }
 
@@ -61,6 +89,7 @@ function _viewer_start_session(array $v): void {
         'fullname'  => $v['fullname'],
         'direction' => $v['direction'],
         'service'   => $v['service'],
+        'agence'    => $v['agence'] ?? '',
     ];
     if (empty($_SESSION['viewer_session_logged'])) {
         try {

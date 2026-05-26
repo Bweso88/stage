@@ -4,4 +4,5 @@ test_upload.php
 admin/db.php
 .setup_done
 .viewer_setup_done
+.org_setup_done
 *.bak
