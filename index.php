@@ -9,7 +9,9 @@ foreach ($themes as $themeDir) {
     $videos = glob($themeDir . "/*.mp4") ?: [];
     $count  = count($videos);
     $totalVideos += $count;
-    $themeData[] = ["name" => $name, "count" => $count, "path" => $themeDir];
+    $coverFiles = glob($themeDir . "/cover.*") ?: [];
+    $cover  = $coverFiles ? $coverFiles[0] : "";
+    $themeData[] = ["name" => $name, "count" => $count, "path" => $themeDir, "cover" => $cover];
 }
 $totalThemes = count($themeData);
 
@@ -202,7 +204,12 @@ footer{background:#111;padding:40px 5% 24px;}
         ?>
         <a href="videos.php?theme=<?php echo urlencode($theme['name']); ?>" class="course-card">
           <div class="course-thumb" style="background:linear-gradient(135deg,<?php echo $color; ?>22,<?php echo $color; ?>44);">
-            <div class="course-thumb-icon"><?php echo $icon; ?></div>
+            <?php if (!empty($theme['cover'])): ?>
+              <img src="<?php echo htmlspecialchars($theme['cover']); ?>" alt="<?php echo htmlspecialchars($theme['name']); ?>"
+                   style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+            <?php else: ?>
+              <div class="course-thumb-icon"><?php echo $icon; ?></div>
+            <?php endif; ?>
             <div class="course-thumb-count"><?php echo $theme['count']; ?> vidéo(s)</div>
           </div>
           <div class="course-body">

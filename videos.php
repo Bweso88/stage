@@ -21,6 +21,8 @@ foreach ($videos as $v) {
 
 $allThemes = array_filter(glob($videoDir . "*"), 'is_dir');
 $icons = ["🖥️","📊","📋","🎯","💡","📈","🔧","📚","🎓","💼","🌐","📱"];
+$coverFiles = glob($themePath . "cover.*") ?: [];
+$coverImg   = $coverFiles ? $coverFiles[0] : "";
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -121,7 +123,7 @@ footer a{color:#6b7280;}footer a:hover{color:#fff;}
 </header>
 
 <?php if (!empty($theme) && is_dir($themePath)): ?>
-<div class="course-banner">
+<div class="course-banner" style="<?php echo $coverImg ? 'background:linear-gradient(135deg,rgba(28,29,31,.85),rgba(30,58,95,.85)),url('.htmlspecialchars($coverImg).') center/cover no-repeat' : ''; ?>">
   <div class="breadcrumb-custom">
     <a href="index.php">Accueil</a>
     <span class="breadcrumb-sep">›</span>
