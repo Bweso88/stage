@@ -1,63 +1,57 @@
 <?php
 $pdo = getPDO();
-$id  = (int)($_GET['id'] ?? 0);
+$rid = (int)($_GET['id'] ?? 0); // renouvellement_id
 
 $stmt = $pdo->prepare("
-    SELECT s.*,
-           u.nom, u.prenom, u.email, u.civilite,
-           d.libelle AS direction, d.abreviation AS dir_abr,
-           dom.libelle AS domaine,
-           eu.nom AS enc_nom, eu.prenom AS enc_prenom, eu.civilite AS enc_civ,
-           c.reference AS ref_cand
-    FROM stages s
+    SELECT r.*,
+           s.reference AS ref_stage, s.direction_id, s.domaine_id, s.stagiaire_id,
+           s.montant_transport, s.remboursement_transport,
+           u.nom, u.prenom, u.civilite,
+           d.libelle AS direction,
+           dom.libelle AS domaine
+    FROM renouvellements_stage r
+    JOIN stages s ON s.id = r.stage_id
     JOIN stagiaires st ON st.id = s.stagiaire_id
     JOIN utilisateurs u ON u.id = st.utilisateur_id
     LEFT JOIN directions d ON d.id = s.direction_id
     LEFT JOIN domaines dom ON dom.id = s.domaine_id
-    LEFT JOIN utilisateurs eu ON eu.id = s.encadrant_id
-    LEFT JOIN candidatures c ON c.id = s.candidature_id
-    WHERE s.id = ?
+    WHERE r.id = ?
 ");
-$stmt->execute([$id]);
-$stage = $stmt->fetch();
+$stmt->execute([$rid]);
+$r = $stmt->fetch();
 
-if (!$stage) {
-    echo '<div class="alert alert-danger">Stage introuvable.</div>';
+if (!$r) {
+    echo '<div class="alert alert-danger">Renouvellement introuvable.</div>';
     return;
 }
 
 $mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
-function dateFr($date, $mois) {
+function dateFrR($date, $mois) {
     $d = new DateTime($date);
     return $d->format('d') . ' ' . $mois[(int)$d->format('m') - 1] . ' ' . $d->format('Y');
 }
 
-$dateDebutFr = dateFr($stage['date_debut'], $mois);
-$dateFinFr   = dateFr($stage['date_fin'], $mois);
-$dateLettres = dateFr(date('Y-m-d'), $mois);
+$dateDebutFr = dateFrR($r['date_debut_proposee'], $mois);
+$dateFinFr   = dateFrR($r['date_fin_proposee'], $mois);
+$dateLettres = dateFrR(date('Y-m-d'), $mois);
 $annee       = date('Y');
 
-// Numéro de référence lettre (basé sur l'ID du stage, sur 3 chiffres)
-$numRef = str_pad($id, 3, '0', STR_PAD_LEFT);
+$numRef = str_pad($rid, 3, '0', STR_PAD_LEFT);
 
-// Civilité destinataire
-$civiliteDest = match(strtolower($stage['civilite'] ?? '')) {
+$civiliteDest = match(strtolower($r['civilite'] ?? '')) {
     'madame', 'mme'  => 'Madame',
     'mademoiselle', 'mlle' => 'Mademoiselle',
     default => 'Monsieur',
 };
 
-// Montant transport en lettres (simplifié)
-$montantNum = (int)($stage['montant_transport'] ?? 0);
-
-// Service/domaine
-$service = $stage['domaine'] ?? ($stage['direction'] ?? 'la Direction');
+$ordinals = ['', 'premier', 'deuxième', 'troisième'];
+$ordinal  = $ordinals[$r['numero_renouvellement']] ?? ($r['numero_renouvellement'] . 'ème');
 ?>
 
 <div class="page-header no-print" style="margin-bottom:16px">
     <div>
-        <a href="backoffice.php?page=stage_detail&id=<?= $id ?>" class="btn btn-ghost btn-sm">← Retour</a>
+        <a href="backoffice.php?page=renouvellements" class="btn btn-ghost btn-sm">← Retour</a>
     </div>
     <button class="btn btn-navy btn-sm" onclick="window.print()">🖨 Imprimer / PDF</button>
 </div>
@@ -88,7 +82,6 @@ $service = $stage['domaine'] ?? ($stage['direction'] ?? 'la Direction');
     align-items: flex-start;
     margin-bottom: 30px;
 }
-.lettre-logo-zone { max-width: 260px; }
 .lettre-logo-title {
     font-size: 14px;
     font-weight: bold;
@@ -96,100 +89,58 @@ $service = $stage['domaine'] ?? ($stage['direction'] ?? 'la Direction');
     letter-spacing: 0.5px;
     margin-bottom: 2px;
 }
-.lettre-logo-sub {
-    font-size: 11px;
-    color: #444;
-}
-.lettre-dest-zone {
-    text-align: right;
-    font-size: 13px;
-    min-width: 220px;
-}
-.lettre-ref-line {
-    font-size: 12px;
-    margin-bottom: 20px;
-}
-.lettre-date-line {
-    text-align: right;
-    font-size: 13px;
-    margin-bottom: 24px;
-}
-.lettre-objet {
-    margin-bottom: 24px;
-    font-size: 13px;
-}
+.lettre-logo-sub { font-size: 11px; color: #444; }
+.lettre-dest-zone { text-align: right; font-size: 13px; min-width: 220px; }
+.lettre-ref-line { font-size: 12px; margin-bottom: 20px; }
+.lettre-date-line { text-align: right; font-size: 13px; margin-bottom: 24px; }
+.lettre-objet { margin-bottom: 24px; font-size: 13px; }
 .lettre-objet strong { text-decoration: underline; }
-.lettre-corps p {
-    margin-bottom: 14px;
-    text-align: justify;
-}
-.lettre-sig-zone {
-    margin-top: 40px;
-    text-align: right;
-    font-size: 13px;
-}
+.lettre-corps p { margin-bottom: 14px; text-align: justify; }
+.lettre-sig-zone { margin-top: 40px; text-align: right; font-size: 13px; }
 .lettre-sig-zone p { margin: 2px 0; }
-.lettre-ampli {
-    margin-top: 50px;
-    font-size: 12px;
-    border-top: 1px solid #000;
-    padding-top: 8px;
-}
-.lettre-footer {
-    margin-top: 40px;
-    border-top: 1px solid #888;
-    padding-top: 8px;
-    font-size: 11px;
-    text-align: center;
-    color: #444;
-}
+.lettre-ampli { margin-top: 50px; font-size: 12px; border-top: 1px solid #000; padding-top: 8px; }
+.lettre-footer { margin-top: 40px; border-top: 1px solid #888; padding-top: 8px; font-size: 11px; text-align: center; color: #444; }
 </style>
 
 <div class="lettre-page">
 
-    <!-- En-tête -->
     <div class="lettre-entete">
-        <div class="lettre-logo-zone">
+        <div>
             <div class="lettre-logo-title">Fédération des MUCODEC</div>
             <div class="lettre-logo-sub">Mutuelles Congolaises d'Epargne et de Crédit</div>
         </div>
         <div class="lettre-dest-zone">
             <div><?= $civiliteDest ?></div>
-            <div><strong><?= h(strtoupper($stage['nom']) . ' ' . $stage['prenom']) ?></strong></div>
+            <div><strong><?= h(strtoupper($r['nom']) . ' ' . $r['prenom']) ?></strong></div>
             <div>Brazzaville</div>
         </div>
     </div>
 
-    <!-- Référence -->
     <div class="lettre-ref-line">
         N/Réf. : <strong><?= $numRef ?>L/DGM/DRH/SRH/<?= $annee ?></strong>
     </div>
 
-    <!-- Date -->
     <div class="lettre-date-line">
         Brazzaville, le <?= $dateLettres ?>
     </div>
 
-    <!-- Objet -->
     <div class="lettre-objet">
-        <strong>Objet : Stage</strong>
+        <strong>Objet : Renouvellement</strong>
     </div>
 
-    <!-- Corps -->
     <div class="lettre-corps">
         <p>
-            Nous avons l'honneur de vous informer que la Fédération des MUCODEC vous accueille
-            en qualité de stagiaire au sein de
-            <?= h($stage['direction'] ? 'la ' . $stage['direction'] : 'nos services') ?>
-            <?= $service && $service !== ($stage['direction'] ?? '') ? ', dans le domaine de <strong>' . h($service) . '</strong>' : '' ?>,
+            Suite à votre stage au sein de la Fédération des MUCODEC
+            <?= $r['direction'] ? 'à la ' . h($r['direction']) : '' ?>,
+            nous avons l'honneur de vous informer que votre stage fait l'objet
+            d'un <strong><?= $ordinal ?> renouvellement</strong>,
             et ce du <strong><?= $dateDebutFr ?></strong> au <strong><?= $dateFinFr ?></strong>.
         </p>
 
-        <?php if ($montantNum > 0): ?>
+        <?php if ($r['remboursement_transport'] && (int)$r['montant_transport'] > 0): ?>
         <p>
             Une indemnité de transport d'un montant de
-            <strong><?= number_format($montantNum, 0, ',', ' ') ?> Francs CFA</strong>
-            (<?= h($stage['montant_transport_lettres'] ?? number_format($montantNum, 0, ',', ' ') . ' Francs CFA') ?>)
+            <strong><?= number_format((int)$r['montant_transport'], 0, ',', ' ') ?> Francs CFA</strong>
             vous sera allouée mensuellement.
         </p>
         <?php endif; ?>
@@ -199,19 +150,16 @@ $service = $stage['domaine'] ?? ($stage['direction'] ?? 'la Direction');
         </p>
     </div>
 
-    <!-- Signature -->
     <div class="lettre-sig-zone">
-        <p>Le Directeur,</p>
+        <p>Le Directeur Général Adjoint,</p>
         <br><br><br>
         <p><strong>Romaric METALA</strong></p>
     </div>
 
-    <!-- Ampliations -->
     <div class="lettre-ampli">
-        <strong>Ampliations :</strong> CHRONO
+        <strong>Ampliations :</strong> DRBP &nbsp;–&nbsp; CLM TALANGAI &nbsp;–&nbsp; PV BIKAROUA &nbsp;–&nbsp; CHRONO
     </div>
 
-    <!-- Pied de page -->
     <div class="lettre-footer">
         Avenue Paul Doumer BP 13 237 - Tél. : (242) 81 07 57 &nbsp;Fax : (242) 81 01 68 - Brazzaville-Congo
     </div>

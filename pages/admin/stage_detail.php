@@ -52,8 +52,10 @@ $peutRenouveler = $isActif && $stage['nb_renouvellements'] < 3;
     </div>
     <div style="display:flex;gap:8px;align-items:center">
         <?= statusBadge($stage['statut']) ?>
-        <a href="backoffice.php?page=lettre_stage&id=<?= $id ?>" class="btn btn-ghost btn-sm" target="_blank">🖨 Imprimer lettre</a>
-        <a href="api/generer-lettre.php?stage_id=<?= $id ?>" class="btn btn-navy btn-sm">📥 Télécharger DOCX</a>
+        <a href="backoffice.php?page=lettre_stage&id=<?= $id ?>" class="btn btn-ghost btn-sm" target="_blank">🖨 Lettre de stage</a>
+        <?php if ($stage['statut'] === 'termine'): ?>
+        <a href="backoffice.php?page=attestation_stage&id=<?= $id ?>" class="btn btn-ghost btn-sm" target="_blank">📄 Attestation</a>
+        <?php endif; ?>
     </div>
 </div>
 

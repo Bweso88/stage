@@ -96,6 +96,8 @@ $filtres = [
                     <td>
                         <?php if ($r['statut'] === 'en_attente' && hasRole('habilite','administrateur','superviseur')): ?>
                         <button class="btn btn-navy btn-xs" onclick="openModal('modal-dec-<?= $r['id'] ?>')">Décision</button>
+                        <?php elseif ($r['statut'] === 'valide'): ?>
+                        <a href="backoffice.php?page=lettre_renouvellement&id=<?= $r['id'] ?>" class="btn btn-ghost btn-xs" target="_blank">🖨 Lettre</a>
                         <?php else: ?>
                         <span class="text-muted text-sm"><?= $r['trait_nom'] ? h($r['trait_prenom'] . ' ' . $r['trait_nom']) : '—' ?></span>
                         <?php endif; ?>
