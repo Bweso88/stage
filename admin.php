@@ -72,7 +72,13 @@ body{font-family:'Montserrat',sans-serif;background:linear-gradient(135deg,#1b2a
 <div class="wrap">
   <div class="card">
     <div class="card-header">
+      <?php if (file_exists(__DIR__ . '/assets/img/logo.gif')): ?>
+      <div style="margin-bottom:12px">
+        <img src="assets/img/logo.gif" alt="MUCODEC" style="height:70px;width:auto;background:#fff;border-radius:8px;padding:6px 12px;">
+      </div>
+      <?php else: ?>
       <div class="logo">Stag<span>IA</span></div>
+      <?php endif ?>
       <div class="logo-sub">Backoffice Administration</div>
     </div>
     <div class="card-body">

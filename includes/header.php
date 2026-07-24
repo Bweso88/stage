@@ -353,10 +353,18 @@ textarea.form-control{min-height:100px;resize:vertical;}
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <a href="<?= $isAdminArea ? 'backoffice.php' : 'espace-stagiaire.php' ?>">
+      <?php
+        $logoPath = __DIR__ . '/../assets/img/logo.gif';
+        $logoExists = file_exists($logoPath);
+      ?>
+      <?php if ($logoExists): ?>
+      <img src="assets/img/logo.gif" alt="MUCODEC" style="height:52px;width:auto;background:#fff;border-radius:6px;padding:4px 8px;">
+      <?php else: ?>
       <div>
         <div class="logo-text">Stag<span>IA</span></div>
         <div class="logo-sub">Gestion des stages</div>
       </div>
+      <?php endif ?>
     </a>
   </div>
 

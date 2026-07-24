@@ -133,7 +133,13 @@ body{font-family:'Montserrat',sans-serif;background:#f4f5f7;color:#2c3e50;}
 <body>
 
 <nav class="navbar">
-  <a href="index.php" class="logo">Stag<span>IA</span></a>
+  <a href="index.php" class="logo">
+    <?php if (file_exists(__DIR__ . '/assets/img/logo.gif')): ?>
+    <img src="assets/img/logo.gif" alt="MUCODEC" style="height:44px;width:auto;background:#fff;border-radius:5px;padding:3px 8px;">
+    <?php else: ?>
+    Stag<span>IA</span>
+    <?php endif ?>
+  </a>
   <div class="nav-links">
     <a href="inscription.php" class="nav-btn">S'inscrire</a>
     <a href="admin.php">Backoffice</a>

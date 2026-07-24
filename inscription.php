@@ -225,7 +225,13 @@ textarea.form-control{min-height:120px;resize:vertical;}
 <body>
 
 <nav class="navbar">
-  <a href="index.php" class="logo">Stag<span>IA</span></a>
+  <a href="index.php" class="logo">
+    <?php if (file_exists(__DIR__ . '/assets/img/logo.gif')): ?>
+    <img src="assets/img/logo.gif" alt="MUCODEC" style="height:40px;width:auto;background:#fff;border-radius:5px;padding:3px 8px;">
+    <?php else: ?>
+    Stag<span>IA</span>
+    <?php endif ?>
+  </a>
   <a href="index.php">← Retour aux offres</a>
 </nav>
 
