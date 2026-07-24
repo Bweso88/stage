@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Espace stagiaire privé
+ * Stage - Espace stagiaire privé
  */
 require_once __DIR__ . '/config.php';
 requireStagiaire();

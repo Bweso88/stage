@@ -131,7 +131,7 @@ body{font-family:'Montserrat',sans-serif;font-size:12pt;color:#1a1a1a;background
 </div>
 
 <div class="footer-note">
-  StagIA — Système de gestion des stages • Réf. <?= h($stage['reference']) ?> • Généré le <?= date('d/m/Y à H:i') ?>
+  Stage — Système de gestion des stages • Réf. <?= h($stage['reference']) ?> • Généré le <?= date('d/m/Y à H:i') ?>
 </div>
 
 </body>

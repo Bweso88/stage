@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Page publique (offres + connexion stagiaire)
+ * Stage - Page publique (offres + connexion stagiaire)
  */
 require_once __DIR__ . '/config.php';
 
@@ -47,7 +47,7 @@ $offres = $pdo->query('SELECT o.*, d.libelle as direction_libelle, dm.libelle as
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StagIA – Offres de stage</title>
+<title>Stage – Offres de stage</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -137,7 +137,7 @@ body{font-family:'Montserrat',sans-serif;background:#f4f5f7;color:#2c3e50;}
     <?php if (file_exists(__DIR__ . '/assets/img/logo.gif')): ?>
     <img src="assets/img/logo.gif" alt="MUCODEC" style="height:44px;width:auto;background:#fff;border-radius:5px;padding:3px 8px;">
     <?php else: ?>
-    Stag<span>IA</span>
+    Stage
     <?php endif ?>
   </a>
   <div class="nav-links">
@@ -233,7 +233,7 @@ body{font-family:'Montserrat',sans-serif;background:#f4f5f7;color:#2c3e50;}
 </div>
 
 <footer class="footer">
-  &copy; <?= date('Y') ?> StagIA &mdash; Plateforme de gestion des stages
+  &copy; <?= date('Y') ?> Stage &mdash; Plateforme de gestion des stages
 </footer>
 
 </body>

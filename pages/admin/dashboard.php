@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Dashboard admin
+ * Stage - Dashboard admin
  */
 define('STAGIA_PAGE', 'Tableau de bord');
 require_once __DIR__ . '/../../includes/header.php';
@@ -29,7 +29,7 @@ $pending_renouv = $pdo->query("SELECT r.*, sg.reference as stage_ref, u.nom, u.p
 
 <div class="page-header">
   <h1>Tableau de bord</h1>
-  <p>Vue d'ensemble de la plateforme StagIA &mdash; <?= date('d/m/Y') ?></p>
+  <p>Vue d'ensemble de la plateforme Stage &mdash; <?= date('d/m/Y') ?></p>
 </div>
 
 <!-- Stats -->

@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Connexion backoffice (administrateurs / habilités / superviseurs / directeurs)
+ * Stage - Connexion backoffice (administrateurs / habilités / superviseurs / directeurs)
  */
 require_once __DIR__ . '/config.php';
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>StagIA – Connexion Backoffice</title>
+<title>Stage – Connexion Backoffice</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -77,7 +77,7 @@ body{font-family:'Montserrat',sans-serif;background:linear-gradient(135deg,#1b2a
         <img src="assets/img/logo.gif" alt="MUCODEC" style="height:70px;width:auto;background:#fff;border-radius:8px;padding:6px 12px;">
       </div>
       <?php else: ?>
-      <div class="logo">Stag<span>IA</span></div>
+      <div class="logo">Stage</div>
       <?php endif ?>
       <div class="logo-sub">Backoffice Administration</div>
     </div>

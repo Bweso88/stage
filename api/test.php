@@ -1,6 +1,6 @@
 <?php
 /**
- * api/test.php — Diagnostic de configuration StagIA
+ * api/test.php — Diagnostic de configuration Stage
  */
 require_once __DIR__ . '/../config.php';
 
@@ -61,7 +61,7 @@ $checks[] = ['label' => 'Dossier uploads', 'ok' => $uploadsOk, 'detail' => $uplo
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>StagIA — Diagnostic</title>
+<title>Stage — Diagnostic</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 body{font-family:'Montserrat',sans-serif;background:#f4f5f7;margin:0;padding:30px;color:#2c3e50}
@@ -80,7 +80,7 @@ p.sub{color:#6b7280;margin-bottom:24px}
 </style>
 </head>
 <body>
-<h1>StagIA — Diagnostic système</h1>
+<h1>Stage — Diagnostic système</h1>
 <p class="sub">Vérification de la configuration au <?= date('d/m/Y H:i') ?></p>
 
 <div class="card">

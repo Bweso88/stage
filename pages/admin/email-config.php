@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['test_email'])) {
     if (!$to) {
         $testResult = ['ok' => false, 'msg' => 'Adresse email invalide.'];
     } else {
-        $html = '<h2>Test StagIA</h2><p>Si vous recevez cet email, la configuration SMTP est correcte.</p><p>Envoyé le ' . date('d/m/Y à H:i') . '</p>';
-        $ok = sendMail($to, 'Test StagIA — ' . date('d/m/Y H:i'), $html, 'Test StagIA');
+        $html = '<h2>Test Stage</h2><p>Si vous recevez cet email, la configuration SMTP est correcte.</p><p>Envoyé le ' . date('d/m/Y à H:i') . '</p>';
+        $ok = sendMail($to, 'Test Stage — ' . date('d/m/Y H:i'), $html, 'Test Stage');
         $testResult = ['ok' => $ok, 'msg' => $ok ? 'Email envoyé avec succès à ' . $to : 'Échec de l\'envoi. Vérifiez les paramètres SMTP.'];
     }
 }
@@ -26,7 +26,7 @@ $smtpHost   = $_ENV['SMTP_HOST'] ?? '';
 $smtpPort   = $_ENV['SMTP_PORT'] ?? '587';
 $smtpUser   = $_ENV['SMTP_USER'] ?? '';
 $smtpFrom   = $_ENV['SMTP_FROM_EMAIL'] ?? '';
-$smtpName   = $_ENV['SMTP_FROM_NAME'] ?? 'StagIA';
+$smtpName   = $_ENV['SMTP_FROM_NAME'] ?? 'Stage';
 $smtpSecure = $_ENV['SMTP_SECURE'] ?? 'tls';
 ?>
 <div class="page-header">

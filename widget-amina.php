@@ -76,7 +76,7 @@
     <div class="avatar">🌸</div>
     <div class="info">
       <h4>Amina</h4>
-      <p>Assistante StagIA • En ligne</p>
+      <p>Assistante Stage • En ligne</p>
     </div>
     <button class="close-btn" onclick="aminaToggle()">✕</button>
   </div>
@@ -91,7 +91,7 @@
 <script>
 (function(){
 const KB = {
-  'bonjour': ['Bonjour ! 🌸 Je suis Amina, votre assistante StagIA. Comment puis-je vous aider aujourd\'hui ?'],
+  'bonjour': ['Bonjour ! 🌸 Je suis Amina, votre assistante Stage. Comment puis-je vous aider aujourd\'hui ?'],
   'stage': [
     'Pour programmer un stage, la candidature doit être validée par le superviseur. L\'habilité peut ensuite cliquer sur "🎓 Programmer" dans le détail de la candidature.',
     'La durée initiale d\'un stage est de 31 jours maximum. Des renouvellements sont possibles jusqu\'à 4 fois.',
@@ -120,7 +120,7 @@ function aminaToggle() {
   open = !open;
   document.getElementById('amina-bubble').classList.toggle('open', open);
   if (open && !document.getElementById('amina-msgs').children.length) {
-    aminaBot('Bonjour ! 🌸 Je suis Amina, votre assistante. Posez-moi vos questions sur StagIA !');
+    aminaBot('Bonjour ! 🌸 Je suis Amina, votre assistante. Posez-moi vos questions sur Stage !');
     renderChips();
   }
 }

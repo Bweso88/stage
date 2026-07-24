@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Configuration principale
+ * Stage - Configuration principale
  */
 
 session_start();

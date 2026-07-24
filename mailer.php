@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Mailer SMTP
+ * Stage - Mailer SMTP
  */
 
 class SmtpMailer {
@@ -19,7 +19,7 @@ class SmtpMailer {
         $this->user      = $_ENV['SMTP_USER']       ?? '';
         $this->pass      = $_ENV['SMTP_PASS']       ?? '';
         $this->fromEmail = $_ENV['SMTP_FROM_EMAIL'] ?? 'noreply@stagia.org';
-        $this->fromName  = $_ENV['SMTP_FROM_NAME']  ?? 'StagIA';
+        $this->fromName  = $_ENV['SMTP_FROM_NAME']  ?? 'Stage';
     }
 
     public function send(string $to, string $toName, string $subject, string $htmlBody): bool {
@@ -29,7 +29,7 @@ class SmtpMailer {
         $headers[] = 'Content-Type: multipart/alternative; boundary="' . $boundary . '"';
         $headers[] = 'From: ' . $this->fromName . ' <' . $this->fromEmail . '>';
         $headers[] = 'Reply-To: ' . $this->fromEmail;
-        $headers[] = 'X-Mailer: StagIA/1.0';
+        $headers[] = 'X-Mailer: Stage/1.0';
 
         $toHeader = $toName ? "$toName <$to>" : $to;
 
@@ -63,16 +63,16 @@ body{font-family:Montserrat,Arial,sans-serif;background:#f4f5f7;margin:0;padding
 .info-box{background:#f4f5f7;border-left:4px solid #1b2a6b;padding:15px;margin:15px 0;border-radius:0 6px 6px 0}
 </style></head><body>
 <div class="wrap">
-<div class="header"><h1>Stag<span>IA</span></h1><p style="margin:5px 0;font-size:13px">' . htmlspecialchars($title) . '</p></div>
+<div class="header"><h1>Stage</h1><p style="margin:5px 0;font-size:13px">' . htmlspecialchars($title) . '</p></div>
 <div class="body">' . $content . '</div>
-<div class="footer">Ce message est envoy&eacute; automatiquement par StagIA &mdash; Ne pas r&eacute;pondre</div>
+<div class="footer">Ce message est envoy&eacute; automatiquement par Stage &mdash; Ne pas r&eacute;pondre</div>
 </div></body></html>';
     }
 
     public static function bienvenue(string $prenom, string $email, string $ref, float $score, string $offre = ''): string {
         $offreLine = $offre ? '<p>Offre concern&eacute;e : <strong>' . htmlspecialchars($offre) . '</strong></p>' : '<p>Candidature spontan&eacute;e</p>';
         $content = '<p>Bonjour <strong>' . htmlspecialchars($prenom) . '</strong>,</p>
-<p>Votre candidature a &eacute;t&eacute; re&ccedil;ue et enregistr&eacute;e avec succ&egrave;s sur la plateforme StagIA.</p>
+<p>Votre candidature a &eacute;t&eacute; re&ccedil;ue et enregistr&eacute;e avec succ&egrave;s sur la plateforme Stage.</p>
 <div class="info-box">
   <p><strong>R&eacute;f&eacute;rence :</strong> ' . htmlspecialchars($ref) . '</p>
   <p><strong>Email :</strong> ' . htmlspecialchars($email) . '</p>
@@ -80,7 +80,7 @@ body{font-family:Montserrat,Arial,sans-serif;background:#f4f5f7;margin:0;padding
   ' . $offreLine . '
 </div>
 <p>Votre dossier sera examin&eacute; par notre &eacute;quipe dans les meilleurs d&eacute;lais. Vous serez notifi&eacute;(e) de l\'&eacute;volution de votre candidature par email.</p>
-<p>Cordialement,<br><strong>L\'&eacute;quipe StagIA</strong></p>';
+<p>Cordialement,<br><strong>L\'&eacute;quipe Stage</strong></p>';
         return self::layout('Confirmation de candidature', $content);
     }
 
@@ -97,7 +97,7 @@ body{font-family:Montserrat,Arial,sans-serif;background:#f4f5f7;margin:0;padding
   <p><strong>D&eacute;cision :</strong> <span style="color:' . $color . ';font-weight:700">' . $statutTxt . '</span></p>
   ' . ($commentaire ? '<p><strong>Commentaire :</strong> ' . htmlspecialchars($commentaire) . '</p>' : '') . '
 </div>
-<p>Cordialement,<br><strong>L\'&eacute;quipe StagIA</strong></p>';
+<p>Cordialement,<br><strong>L\'&eacute;quipe Stage</strong></p>';
         return self::layout('D&eacute;cision sur votre candidature', $content);
     }
 
@@ -112,7 +112,7 @@ body{font-family:Montserrat,Arial,sans-serif;background:#f4f5f7;margin:0;padding
   <p><strong>D&eacute;cision :</strong> <span style="color:' . $color . ';font-weight:700">' . $statutTxt . '</span></p>
   ' . ($isValide ? '<p><strong>Nouvelle date de fin :</strong> ' . htmlspecialchars($date_fin) . '</p>' : '') . '
 </div>
-<p>Cordialement,<br><strong>L\'&eacute;quipe StagIA</strong></p>';
+<p>Cordialement,<br><strong>L\'&eacute;quipe Stage</strong></p>';
         return self::layout('D&eacute;cision renouvellement de stage', $content);
     }
 
@@ -126,7 +126,7 @@ body{font-family:Montserrat,Arial,sans-serif;background:#f4f5f7;margin:0;padding
   <p><strong>Email :</strong> ' . htmlspecialchars($email) . '</p>
 </div>
 <p>Veuillez vous connecter &agrave; votre espace stagiaire pour t&eacute;l&eacute;charger votre lettre de stage.</p>
-<p>Cordialement,<br><strong>L\'&eacute;quipe StagIA</strong></p>';
+<p>Cordialement,<br><strong>L\'&eacute;quipe Stage</strong></p>';
         return self::layout('Votre lettre de stage', $content);
     }
 }

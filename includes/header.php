@@ -22,7 +22,7 @@ $flash = getFlash();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StagIA – <?= h(STAGIA_PAGE ?: 'Tableau de bord') ?></title>
+<title>Stage – <?= h(STAGIA_PAGE ?: 'Tableau de bord') ?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -361,7 +361,7 @@ textarea.form-control{min-height:100px;resize:vertical;}
       <img src="assets/img/logo.gif" alt="MUCODEC" style="height:52px;width:auto;background:#fff;border-radius:6px;padding:4px 8px;">
       <?php else: ?>
       <div>
-        <div class="logo-text">Stag<span>IA</span></div>
+        <div class="logo-text">Stage</div>
         <div class="logo-sub">Gestion des stages</div>
       </div>
       <?php endif ?>
@@ -442,7 +442,7 @@ textarea.form-control{min-height:100px;resize:vertical;}
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:12px;">
       <span class="topbar-hamburger" onclick="toggleSidebar()">☰</span>
-      <span class="topbar-title"><?= h(STAGIA_PAGE ?: 'StagIA') ?></span>
+      <span class="topbar-title"><?= h(STAGIA_PAGE ?: 'Stage') ?></span>
     </div>
     <div class="topbar-right">
       <div class="topbar-notif" title="Notifications">

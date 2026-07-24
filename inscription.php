@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Inscription stagiaire + dépôt de candidature
+ * Stage - Inscription stagiaire + dépôt de candidature
  */
 require_once __DIR__ . '/config.php';
 
@@ -141,10 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // 8. Notification
                 $pdo->prepare('INSERT INTO notifications (utilisateur_id, type_notification, objet, message) VALUES (?,?,?,?)')
-                    ->execute([$uid, 'inscription', 'Inscription confirm&eacute;e', 'Bienvenue sur StagIA ! Votre candidature ' . $ref . ' a &eacute;t&eacute; enregistr&eacute;e.']);
+                    ->execute([$uid, 'inscription', 'Inscription confirm&eacute;e', 'Bienvenue sur Stage ! Votre candidature ' . $ref . ' a &eacute;t&eacute; enregistr&eacute;e.']);
 
                 // 9. Send welcome email
-                sendMail($email, 'Bienvenue sur StagIA', MailTemplates::bienvenue($prenom, $email, $ref, $score, $offre_sel ? ($ofData['titre'] ?? '') : ''), $prenom . ' ' . $nom);
+                sendMail($email, 'Bienvenue sur Stage', MailTemplates::bienvenue($prenom, $email, $ref, $score, $offre_sel ? ($ofData['titre'] ?? '') : ''), $prenom . ' ' . $nom);
 
                 $pdo->commit();
 
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'role'         => 'stagiaire',
                     'stagiaire_id' => $sid,
                 ];
-                flash('Inscription r&eacute;ussie ! Bienvenue sur StagIA. Votre candidature (' . $ref . ') a &eacute;t&eacute; enregistr&eacute;e.', 'success');
+                flash('Inscription r&eacute;ussie ! Bienvenue sur Stage. Votre candidature (' . $ref . ') a &eacute;t&eacute; enregistr&eacute;e.', 'success');
                 redirect('espace-stagiaire.php');
 
             } catch (Exception $e) {
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>StagIA – Inscription</title>
+<title>Stage – Inscription</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -229,7 +229,7 @@ textarea.form-control{min-height:120px;resize:vertical;}
     <?php if (file_exists(__DIR__ . '/assets/img/logo.gif')): ?>
     <img src="assets/img/logo.gif" alt="MUCODEC" style="height:40px;width:auto;background:#fff;border-radius:5px;padding:3px 8px;">
     <?php else: ?>
-    Stag<span>IA</span>
+    Stage
     <?php endif ?>
   </a>
   <a href="index.php">← Retour aux offres</a>

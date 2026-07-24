@@ -1,6 +1,6 @@
 <?php
 /**
- * StagIA - Liste stages
+ * Stage - Liste stages
  */
 define('STAGIA_PAGE', 'Stages');
 require_once __DIR__ . '/../../includes/header.php';
