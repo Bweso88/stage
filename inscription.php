@@ -92,17 +92,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
 
-                // 5. CV upload
-                $cv_file = null;
-                if (!empty($_FILES['cv']['name'])) {
-                    $ext = strtolower(pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION));
-                    if (in_array($ext, ['pdf','doc','docx'], true)) {
-                        $dir = __DIR__ . '/uploads/cv/';
-                        if (!is_dir($dir)) mkdir($dir, 0755, true);
-                        $fname = 'cv_' . $sid . '_' . time() . '.' . $ext;
-                        if (move_uploaded_file($_FILES['cv']['tmp_name'], $dir . $fname)) {
-                            $cv_file = $fname;
-                            $pdo->prepare('UPDATE stagiaires SET cv_fichier = ? WHERE id = ?')->execute([$cv_file, $sid]);
+                // 5. Fichiers joints (CV, pièce d'identité, diplôme)
+                $cv_file     = null;
+                $pi_file     = null;
+                $dip_file    = null;
+
+                $uploadDefs = [
+                    'cv'       => ['exts' => ['pdf','doc','docx'], 'dir' => 'cv',       'col' => 'cv_fichier',      'var' => &$cv_file],
+                    'pi'       => ['exts' => ['pdf','jpg','jpeg','png'], 'dir' => 'identite',  'col' => 'piece_identite',  'var' => &$pi_file],
+                    'diplome'  => ['exts' => ['pdf','jpg','jpeg','png','doc','docx'], 'dir' => 'diplomes', 'col' => 'diplome_fichier', 'var' => &$dip_file],
+                ];
+                foreach ($uploadDefs as $field => $cfg) {
+                    if (!empty($_FILES[$field]['name']) && $_FILES[$field]['error'] === UPLOAD_ERR_OK) {
+                        $ext = strtolower(pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION));
+                        if (in_array($ext, $cfg['exts'], true)) {
+                            $uploadDir = __DIR__ . '/uploads/' . $cfg['dir'] . '/';
+                            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                            $fname = $field . '_' . $sid . '_' . time() . '.' . $ext;
+                            if (move_uploaded_file($_FILES[$field]['tmp_name'], $uploadDir . $fname)) {
+                                $cfg['var'] = $fname;
+                                $pdo->prepare('UPDATE stagiaires SET ' . $cfg['col'] . ' = ? WHERE id = ?')->execute([$fname, $sid]);
+                            }
                         }
                     }
                 }
@@ -339,12 +349,24 @@ textarea.form-control{min-height:120px;resize:vertical;}
         <span class="hint">Exemple : PHP, MySQL, JavaScript, Microsoft Office</span>
       </div>
 
-      <!-- CV Upload -->
-      <div class="section-sep"><h3>📄 Curriculum Vitae</h3></div>
-      <div class="form-group">
-        <label>T&eacute;l&eacute;charger votre CV</label>
-        <input type="file" name="cv" class="form-control" accept=".pdf,.doc,.docx">
-        <span class="hint">Formats accept&eacute;s : PDF, DOC, DOCX (max 5 Mo)</span>
+      <!-- Documents -->
+      <div class="section-sep"><h3>📄 Documents &agrave; joindre</h3></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>CV (Curriculum Vitae)</label>
+          <input type="file" name="cv" class="form-control" accept=".pdf,.doc,.docx">
+          <span class="hint">PDF, DOC, DOCX — max 5 Mo</span>
+        </div>
+        <div class="form-group">
+          <label>Pi&egrave;ce d'identit&eacute;</label>
+          <input type="file" name="pi" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+          <span class="hint">PDF ou image (JPG, PNG) — max 5 Mo</span>
+        </div>
+        <div class="form-group col-full">
+          <label>Dernier dipl&ocirc;me ou attestation</label>
+          <input type="file" name="diplome" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+          <span class="hint">PDF, image ou document Word — max 5 Mo</span>
+        </div>
       </div>
 
       <!-- Candidature -->

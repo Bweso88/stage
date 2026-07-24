@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS stagiaires (
     date_inscription TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cv_fichier VARCHAR(255),
     cv_analyse JSON,
+    piece_identite VARCHAR(255),
+    diplome_fichier VARCHAR(255),
     FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
     FOREIGN KEY (domaine_principal_id) REFERENCES domaines(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
