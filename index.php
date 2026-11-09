@@ -103,7 +103,8 @@ a{text-decoration:none;color:inherit;}
 .features-section{background:#fff;border-radius:16px;border:1px solid #c4c5d7;padding:32px;margin-top:24px;}
 .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;margin-top:20px;}
 .feature-card{text-align:center;padding:20px 16px;}
-.feature-icon{font-size:2rem;margin-bottom:12px;}
+.feature-icon{margin-bottom:12px;display:flex;align-items:center;justify-content:center;}
+.feature-icon img{width:64px;height:64px;object-fit:contain;}
 .feature-title{font-size:.95rem;font-weight:700;color:#131b2e;margin-bottom:6px;}
 .feature-text{font-size:.82rem;color:#747686;line-height:1.5;}
 
@@ -255,22 +256,22 @@ footer{background:#131b2e;padding:28px 24px;margin-top:24px;border-radius:12px;}
       <div class="section-title"><span class="section-marker"></span>Pourquoi MucoAcadémie ?</div>
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">🎬</div>
+          <div class="feature-icon"><img src="images/feature_videos.png" alt="Vidéos HD"></div>
           <div class="feature-title">Vidéos HD</div>
           <div class="feature-text">Des tutoriels clairs et bien structurés, accessibles depuis n'importe quel navigateur.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">📁</div>
+          <div class="feature-icon"><img src="images/feature_themes.png" alt="Organisé par thèmes"></div>
           <div class="feature-title">Organisé par thèmes</div>
           <div class="feature-text">Trouvez rapidement la formation dont vous avez besoin grâce aux catégories.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">📱</div>
+          <div class="feature-icon"><img src="images/feature_responsive.png" alt="Responsive"></div>
           <div class="feature-title">Responsive</div>
           <div class="feature-text">Apprenez sur ordinateur, tablette ou mobile, à votre convenance.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🔒</div>
+          <div class="feature-icon"><img src="images/feature_secure.png" alt="Accès sécurisé"></div>
           <div class="feature-title">Accès sécurisé</div>
           <div class="feature-text">Espace d'administration protégé pour gérer les contenus en toute sécurité.</div>
         </div>
