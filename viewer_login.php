@@ -196,9 +196,8 @@ body{min-height:100vh;background:#faf8ff;font-family:"Plus Jakarta Sans",system-
   padding:40px 36px;width:100%;max-width:480px;
   box-shadow:0 4px 24px rgba(0,55,176,.06);}
 
-.card-icon{width:52px;height:52px;border-radius:14px;background:#eaedff;
-  border:1px solid #c4c5d7;display:flex;align-items:center;
-  justify-content:center;font-size:1.5rem;margin-bottom:18px;}
+.card-logo{display:flex;justify-content:center;margin-bottom:20px;}
+.card-logo img{width:80px;height:80px;object-fit:contain;}
 
 .login-card h1{color:#131b2e;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
 .login-card .subtitle{color:#434655;font-size:.88rem;margin-bottom:26px;line-height:1.6;}
@@ -267,7 +266,7 @@ select:disabled{opacity:.45;cursor:not-allowed;background:#f2f3ff;}
 
     <?php if ($step === 'login'): ?>
 
-      <div class="card-icon">🔐</div>
+      <div class="card-logo"><img src="images/mucoacademie.png" alt="MucoAcadémie"></div>
       <h1>Bienvenue</h1>
       <p class="subtitle">Identifiez-vous pour accéder aux formations MucoAcadémie.</p>
 
@@ -302,7 +301,7 @@ select:disabled{opacity:.45;cursor:not-allowed;background:#f2f3ff;}
 
     <?php else: ?>
 
-      <div class="card-icon">👤</div>
+      <div class="card-logo"><img src="images/mucoacademie.png" alt="MucoAcadémie"></div>
       <h1><?php echo $isFirstVisit ? 'Première connexion' : 'Votre profil'; ?></h1>
       <p class="subtitle">
         Identifiant : <strong><?php echo htmlspecialchars($preLogin); ?></strong><br>
