@@ -107,14 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $login     = $ssoLogin ?? ($_SESSION['pending_viewer_login'] ?? trim($_POST['login_hidden'] ?? ''));
         $fullname  = trim($_POST['fullname']  ?? '');
         $poste     = trim($_POST['poste']     ?? '');
-        $direction = trim($_POST['direction'] ?? '');
-        $service   = trim($_POST['service']   ?? '');
-        $agence    = trim($_POST['agence']    ?? '');
+        $direction   = trim($_POST['direction']   ?? '');
+        $service     = trim($_POST['service']     ?? '');
+        $agence      = trim($_POST['agence']      ?? '');
+        $isDirecteur = !empty($_POST['is_directeur']);
 
-        $dirType = '';
-        foreach ($orgData as $d) {
-            if ($d['nom'] === $direction) { $dirType = $d['type']; break; }
-        }
+        // Directeur : pas de service ni d'agence
+        if ($isDirecteur) { $service = ''; $agence = ''; }
 
         if (empty($login)) {
             $error = "Session expirée. Recommencez la connexion.";
@@ -122,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (empty($direction)) {
             $error = "Veuillez sélectionner votre direction.";
             $step  = 'profile'; $preLogin = $login;
-        } elseif (empty($service) && empty($agence)) {
+        } elseif (!$isDirecteur && empty($service) && empty($agence)) {
             $error = "Veuillez sélectionner votre service ou votre agence.";
             $step  = 'profile'; $preLogin = $login;
         } else {
@@ -247,6 +246,11 @@ select:disabled{opacity:.45;cursor:not-allowed;background:#f2f3ff;}
 .section-sep{border:none;border-top:1px solid #e2e7ff;margin:20px 0 16px;}
 .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;
   letter-spacing:.08em;color:#747686;margin-bottom:12px;}
+.checkbox-label{display:flex;align-items:center;gap:10px;cursor:pointer;
+  background:#f0f4ff;border:1px solid #c4c5d7;border-radius:8px;padding:11px 14px;
+  font-size:.88rem;color:#131b2e;font-weight:600;transition:background .2s;}
+.checkbox-label:hover{background:#e2e7ff;}
+.checkbox-label input[type=checkbox]{width:17px;height:17px;accent-color:#0037b0;cursor:pointer;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -379,6 +383,14 @@ select:disabled{opacity:.45;cursor:not-allowed;background:#f2f3ff;}
           </div>
         </div>
 
+        <!-- Directeur -->
+        <div class="form-group" id="directeur-group" style="display:none;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="is_directeur" name="is_directeur" value="1" onchange="onDirecteurChange(this)">
+            <span>Je suis directeur de cette direction</span>
+          </label>
+        </div>
+
         <!-- Service -->
         <div class="form-group" id="service-group">
           <label for="service">Service <span style="color:#ba1a1a">*</span></label>
@@ -425,17 +437,20 @@ select:disabled{opacity:.45;cursor:not-allowed;background:#f2f3ff;}
 var orgData = <?php echo json_encode($orgData, JSON_UNESCAPED_UNICODE); ?>;
 
 function onDirectionChange(sel) {
-  var dirNom   = sel.value;
-  var dir      = orgData.find(function(d){ return d.nom === dirNom; });
-  var svcSel   = document.getElementById('service');
-  var svcGroup = document.getElementById('service-group');
-  var ageSel   = document.getElementById('agence');
-  var ageGroup = document.getElementById('agence-group');
+  var dirNom    = sel.value;
+  var dir       = orgData.find(function(d){ return d.nom === dirNom; });
+  var svcSel    = document.getElementById('service');
+  var svcGroup  = document.getElementById('service-group');
+  var ageSel    = document.getElementById('agence');
+  var ageGroup  = document.getElementById('agence-group');
+  var dirGroup  = document.getElementById('directeur-group');
+  var dirChk    = document.getElementById('is_directeur');
 
-  // Reset service
+  // Reset
   svcSel.innerHTML = '<option value="">— Sélectionner un service —</option>';
   svcSel.disabled  = !dir;
   svcSel.value     = '';
+  dirChk.checked   = false;
 
   if (dir) {
     dir.services.forEach(function(s){
@@ -444,8 +459,10 @@ function onDirectionChange(sel) {
       svcSel.appendChild(opt);
     });
 
+    // Toujours afficher la checkbox "Directeur" dès qu'une direction est choisie
+    dirGroup.style.display = '';
+
     if (dir.type === 'regionale' && dir.agences.length > 0) {
-      // Régionale : agence affichée, service visible mais masqué dès qu'une agence est choisie
       ageSel.innerHTML = '<option value="">— Sélectionner une agence —</option>';
       dir.agences.forEach(function(a){
         var opt = document.createElement('option');
@@ -454,11 +471,9 @@ function onDirectionChange(sel) {
       });
       ageSel.required        = false;
       ageGroup.style.display = '';
-      // Service visible par défaut (pour les non-agence : directeurs, siège)
       svcGroup.style.display = '';
       svcSel.required        = true;
     } else {
-      // Centrale : service requis, pas d'agence
       ageSel.required        = false;
       ageSel.innerHTML       = '<option value=""></option>';
       ageGroup.style.display = 'none';
@@ -466,11 +481,32 @@ function onDirectionChange(sel) {
       svcSel.required        = true;
     }
   } else {
+    dirGroup.style.display = 'none';
     ageSel.required        = false;
     ageSel.innerHTML       = '';
     ageGroup.style.display = 'none';
     svcGroup.style.display = 'none';
     svcSel.required        = false;
+  }
+}
+
+function onDirecteurChange(chk) {
+  var svcGroup = document.getElementById('service-group');
+  var svcSel   = document.getElementById('service');
+  var ageGroup = document.getElementById('agence-group');
+  var ageSel   = document.getElementById('agence');
+
+  if (chk.checked) {
+    // Directeur : masquer service et agence
+    svcGroup.style.display = 'none';
+    svcSel.required        = false;
+    svcSel.value           = '';
+    ageGroup.style.display = 'none';
+    ageSel.required        = false;
+    ageSel.value           = '';
+  } else {
+    // Pas directeur : rétablir le comportement normal
+    onDirectionChange(document.getElementById('direction'));
   }
 }
 
