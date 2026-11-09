@@ -122,11 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (empty($direction)) {
             $error = "Veuillez sélectionner votre direction.";
             $step  = 'profile'; $preLogin = $login;
-        } elseif (empty($service)) {
-            $error = "Veuillez sélectionner votre service.";
-            $step  = 'profile'; $preLogin = $login;
-        } elseif ($dirType === 'regionale' && !empty($orgData) && empty($agence)) {
-            $error = "Veuillez sélectionner votre agence.";
+        } elseif (empty($service) && empty($agence)) {
+            $error = "Veuillez sélectionner votre service ou votre agence.";
             $step  = 'profile'; $preLogin = $login;
         } else {
             $stmt = $pdo->prepare("SELECT id FROM viewers WHERE windows_login = ?");
@@ -384,7 +381,7 @@ select:disabled{opacity:.45;cursor:not-allowed;background:#f2f3ff;}
         </div>
 
         <!-- Service -->
-        <div class="form-group">
+        <div class="form-group" id="service-group">
           <label for="service">Service <span style="color:#ba1a1a">*</span></label>
           <div class="input-wrap">
             <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -401,10 +398,10 @@ select:disabled{opacity:.45;cursor:not-allowed;background:#f2f3ff;}
 
         <!-- Agence (uniquement directions régionales) -->
         <div class="form-group" id="agence-group" style="display:none;">
-          <label for="agence">Agence <span style="color:#ba1a1a">*</span></label>
+          <label for="agence">Agence <span class="opt-label">(optionnel si vous êtes au siège de la direction)</span></label>
           <div class="input-wrap">
             <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-            <select id="agence" name="agence">
+            <select id="agence" name="agence" onchange="onAgenceChange(this)">
               <option value="">— Sélectionner une agence —</option>
             </select>
             <span class="select-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
@@ -432,12 +429,14 @@ function onDirectionChange(sel) {
   var dirNom   = sel.value;
   var dir      = orgData.find(function(d){ return d.nom === dirNom; });
   var svcSel   = document.getElementById('service');
+  var svcGroup = document.getElementById('service-group');
   var ageSel   = document.getElementById('agence');
   var ageGroup = document.getElementById('agence-group');
 
   // Reset service
   svcSel.innerHTML = '<option value="">— Sélectionner un service —</option>';
   svcSel.disabled  = !dir;
+  svcSel.value     = '';
 
   if (dir) {
     dir.services.forEach(function(s){
@@ -446,25 +445,48 @@ function onDirectionChange(sel) {
       svcSel.appendChild(opt);
     });
 
-    // Agence : uniquement si direction régionale
     if (dir.type === 'regionale' && dir.agences.length > 0) {
+      // Régionale : agence affichée, service visible mais masqué dès qu'une agence est choisie
       ageSel.innerHTML = '<option value="">— Sélectionner une agence —</option>';
       dir.agences.forEach(function(a){
         var opt = document.createElement('option');
         opt.value = a; opt.textContent = a;
         ageSel.appendChild(opt);
       });
-      ageSel.required      = true;
-      ageGroup.style.display = '';
-    } else {
       ageSel.required        = false;
-      ageSel.innerHTML       = '';
+      ageGroup.style.display = '';
+      // Service visible par défaut (pour les non-agence : directeurs, siège)
+      svcGroup.style.display = '';
+      svcSel.required        = true;
+    } else {
+      // Centrale : service requis, pas d'agence
+      ageSel.required        = false;
+      ageSel.innerHTML       = '<option value=""></option>';
       ageGroup.style.display = 'none';
+      svcGroup.style.display = '';
+      svcSel.required        = true;
     }
   } else {
     ageSel.required        = false;
     ageSel.innerHTML       = '';
     ageGroup.style.display = 'none';
+    svcGroup.style.display = 'none';
+    svcSel.required        = false;
+  }
+}
+
+function onAgenceChange(sel) {
+  var svcGroup = document.getElementById('service-group');
+  var svcSel   = document.getElementById('service');
+  if (sel.value) {
+    // Agence choisie → service masqué et non requis
+    svcGroup.style.display = 'none';
+    svcSel.required        = false;
+    svcSel.value           = '';
+  } else {
+    // Pas d'agence → service affiché et requis
+    svcGroup.style.display = '';
+    svcSel.required        = true;
   }
 }
 </script>
